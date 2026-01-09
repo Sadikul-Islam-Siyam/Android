@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "588270680570",
+    "project_id": "travel-schedule-manager",
+    "storage_bucket": "travel-schedule-manager.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:588270680570:android:cbbc261300a86ae8c18c43",
+        "android_client_info": {
+          "package_name": "com.siyam.travelschedulemanager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYHW3FuBkgG-LOinIFqSENgtOfG7AogAE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

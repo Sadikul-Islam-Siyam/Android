@@ -15,14 +15,20 @@
             android:id="@+id/action_developerHome_to_routeFinder"
             app:destination="@id/routeFinderFragment" />
         <action
-            android:id="@+id/action_developerHome_to_editApi"
-            app:destination="@id/editApiFragment" />
-        <action
             android:id="@+id/action_developerHome_to_approveUsers"
             app:destination="@id/approveUsersFragment" />
         <action
             android:id="@+id/action_developerHome_to_editHistory"
             app:destination="@id/editHistoryFragment" />
+        <action
+            android:id="@+id/action_developerHome_to_profile"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_developerHome_to_help"
+            app:destination="@id/helpFragment" />
+        <action
+            android:id="@+id/action_developerHome_to_routeManagement"
+            app:destination="@id/routeManagementFragment" />
     </fragment>
 
     <fragment
@@ -36,20 +42,6 @@
         android:label="Route Finder" />
 
     <fragment
-        android:id="@+id/editApiFragment"
-        android:name="com.siyam.travelschedulemanager.ui.schedule.SchedulesFragment"
-        android:label="Edit API Data">
-        <action
-            android:id="@+id/action_editApi_to_addSchedule"
-            app:destination="@id/addScheduleFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/addScheduleFragment"
-        android:name="com.siyam.travelschedulemanager.ui.schedule.AddScheduleFragment"
-        android:label="Add Schedule" />
-
-    <fragment
         android:id="@+id/approveUsersFragment"
         android:name="com.siyam.travelschedulemanager.ui.approval.ApproveUsersFragment"
         android:label="Approve Users" />
@@ -58,5 +50,71 @@
         android:id="@+id/editHistoryFragment"
         android:name="com.siyam.travelschedulemanager.ui.history.EditHistoryFragment"
         android:label="Edit History" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.siyam.travelschedulemanager.ui.profile.ProfileFragment"
+        android:label="My Profile" />
+
+    <fragment
+        android:id="@+id/helpFragment"
+        android:name="com.siyam.travelschedulemanager.ui.help.HelpFragment"
+        android:label="Help" />
+
+    <!-- Route Management Fragments -->
+    <fragment
+        android:id="@+id/routeManagementFragment"
+        android:name="com.siyam.travelschedulemanager.ui.routes.RouteManagementFragment"
+        android:label="Route Management">
+        <argument
+            android:name="userRole"
+            android:defaultValue="developer"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_routeManagement_to_addRouteSelection"
+            app:destination="@id/addRouteSelectionFragment" />
+        <action
+            android:id="@+id/action_routeManagement_to_editBusRoute"
+            app:destination="@id/addBusRouteFragment" />
+        <action
+            android:id="@+id/action_routeManagement_to_editTrainRoute"
+            app:destination="@id/addTrainRouteFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addRouteSelectionFragment"
+        android:name="com.siyam.travelschedulemanager.ui.routes.AddRouteSelectionFragment"
+        android:label="Add Route">
+        <argument
+            android:name="userRole"
+            android:defaultValue="developer"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_addRouteSelection_to_addBusRoute"
+            app:destination="@id/addBusRouteFragment" />
+        <action
+            android:id="@+id/action_addRouteSelection_to_addTrainRoute"
+            app:destination="@id/addTrainRouteFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addBusRouteFragment"
+        android:name="com.siyam.travelschedulemanager.ui.routes.AddBusRouteFragmentNew"
+        android:label="Add Bus Route">
+        <argument
+            android:name="userRole"
+            android:defaultValue="developer"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addTrainRouteFragment"
+        android:name="com.siyam.travelschedulemanager.ui.routes.AddTrainRouteFragment"
+        android:label="Add Train Route">
+        <argument
+            android:name="userRole"
+            android:defaultValue="developer"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

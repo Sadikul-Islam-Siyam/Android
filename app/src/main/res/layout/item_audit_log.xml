@@ -3,15 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp">
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginVertical="6dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/card_orange">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="12dp">
+        android:padding="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,14 +28,15 @@
                 android:text="CREATE"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="?attr/colorPrimary" />
+                android:textColor="@color/primary" />
 
             <TextView
                 android:id="@+id/text_timestamp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Jan 10, 2026 13:45"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:textColor="@color/on_surface_variant" />
 
         </LinearLayout>
 
@@ -41,9 +44,10 @@
             android:id="@+id/text_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:text="User (DEVELOPER)"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textColor="@color/on_surface" />
 
         <TextView
             android:id="@+id/text_entity"
@@ -51,7 +55,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="Entity: schedule"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:textColor="@color/on_surface_variant" />
 
         <TextView
             android:id="@+id/text_details"
@@ -59,7 +64,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Details"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:textColor="@color/on_surface_variant" />
 
     </LinearLayout>
 

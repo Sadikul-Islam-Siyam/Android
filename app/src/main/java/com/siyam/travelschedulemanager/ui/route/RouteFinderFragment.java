@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -21,20 +23,37 @@ import com.siyam.travelschedulemanager.util.Constants;
 import com.siyam.travelschedulemanager.viewmodel.ScheduleViewModel;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 public class RouteFinderFragment extends Fragment {
     private ScheduleViewModel scheduleViewModel;
-    private TextInputEditText editTextOrigin;
-    private TextInputEditText editTextDestination;
+    private AutoCompleteTextView editTextOrigin;
+    private AutoCompleteTextView editTextDestination;
     private TextInputEditText editTextDate;
     private ChipGroup chipGroupTransport;
     private Chip chipAll, chipBus, chipTrain;
     private Button buttonFindRoutes;
     private Calendar selectedDate;
     private SimpleDateFormat dateFormat;
+
+    // Station suggestions for autocomplete
+    private static final String[] STATION_SUGGESTIONS = {
+        "Dhaka", "Kamalapur", "Airport", "Chittagong", "Sylhet", "Rajshahi", 
+        "Khulna", "Barisal", "Rangpur", "Mymensingh", "Comilla", "Gazipur",
+        "Narayanganj", "Tongi", "Narsingdi", "Brahmanbaria", "Kishoreganj",
+        "Cox's Bazar", "Jessore", "Dinajpur", "Bogra", "Saidpur", "Pabna",
+        "Tangail", "Jamalpur", "Netrokona", "Sherpur", "Habiganj", "Moulvibazar",
+        "Sunamganj", "Nawabganj", "Naogaon", "Natore", "Sirajganj", "Kushtia",
+        "Meherpur", "Chuadanga", "Jhenaidah", "Magura", "Narail", "Satkhira",
+        "Bagerhat", "Pirojpur", "Patuakhali", "Bhola", "Barguna", "Jhalokati",
+        "Lakshmipur", "Noakhali", "Feni", "Chandpur", "Shariatpur", "Madaripur",
+        "Gopalganj", "Faridpur", "Manikganj", "Munshiganj", "Rajbari",
+        "Bandarban", "Rangamati", "Khagrachhari", "Thakurgaon", "Panchagarh",
+        "Nilphamari", "Lalmonirhat", "Kurigram", "Gaibandha", "Joypurhat"
+    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,6 +74,7 @@ public class RouteFinderFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         initViews(view);
+        setupAutoComplete();
         setupDatePicker();
         setupTransportFilter();
         setupFindButton();
@@ -74,6 +94,17 @@ public class RouteFinderFragment extends Fragment {
 
         // Set default date to today
         editTextDate.setText(dateFormat.format(selectedDate.getTime()));
+    }
+
+    private void setupAutoComplete() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                STATION_SUGGESTIONS
+        );
+        
+        editTextOrigin.setAdapter(adapter);
+        editTextDestination.setAdapter(adapter);
     }
 
     private void setupDatePicker() {

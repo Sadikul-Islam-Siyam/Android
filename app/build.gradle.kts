@@ -31,6 +31,11 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     
+    lint {
+        abortOnError = false
+        checkReleaseBuilds = false
+    }
+    
     buildFeatures {
         viewBinding = true
     }

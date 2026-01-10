@@ -1,7 +1,15 @@
 package com.siyam.travelschedulemanager.util;
 
 import com.siyam.travelschedulemanager.model.Schedule;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 
 public class RouteAlgorithm {
 

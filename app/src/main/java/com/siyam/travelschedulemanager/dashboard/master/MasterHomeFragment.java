@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -34,18 +35,22 @@ public class MasterHomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        MaterialCardView cardEditApi = view.findViewById(R.id.card_edit_api);
+        MaterialCardView cardRouteManagement = view.findViewById(R.id.card_route_management);
         MaterialCardView cardApproveApiChanges = view.findViewById(R.id.card_approve_api_changes);
         MaterialCardView cardApproveAccounts = view.findViewById(R.id.card_approve_accounts);
         MaterialCardView cardChangeRoles = view.findViewById(R.id.card_change_roles);
         MaterialCardView cardLockUsers = view.findViewById(R.id.card_lock_users);
         MaterialCardView cardFullHistory = view.findViewById(R.id.card_full_history);
+        MaterialCardView cardProfile = view.findViewById(R.id.card_profile);
         MaterialCardView cardLogout = view.findViewById(R.id.card_logout);
+        ImageButton helpButton = view.findViewById(R.id.help_button);
 
         NavController navController = Navigation.findNavController(view);
 
-        cardEditApi.setOnClickListener(v -> {
-            navController.navigate(R.id.action_masterHome_to_editApi);
+        cardRouteManagement.setOnClickListener(v -> {
+            Bundle args = new Bundle();
+            args.putString("userRole", "master");
+            navController.navigate(R.id.action_masterHome_to_routeManagement, args);
         });
 
         cardApproveApiChanges.setOnClickListener(v -> {
@@ -68,10 +73,18 @@ public class MasterHomeFragment extends Fragment {
             navController.navigate(R.id.action_masterHome_to_fullHistory);
         });
 
+        cardProfile.setOnClickListener(v -> {
+            navController.navigate(R.id.action_masterHome_to_profile);
+        });
+
         cardLogout.setOnClickListener(v -> {
             authRepository.signOut();
             startActivity(new Intent(requireContext(), LoginActivity.class));
             requireActivity().finish();
+        });
+        
+        helpButton.setOnClickListener(v -> {
+            navController.navigate(R.id.action_masterHome_to_help);
         });
     }
 }

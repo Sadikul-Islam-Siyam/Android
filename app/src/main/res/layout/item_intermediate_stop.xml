@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="8dp"
+    android:gravity="center_vertical">
+
+    <!-- Timeline indicator -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="8dp"
+            android:background="@color/ocean_blue" />
+
+        <View
+            android:id="@+id/stopDot"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:background="@drawable/circle_primary" />
+
+        <View
+            android:id="@+id/connectingLine"
+            android:layout_width="2dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/ocean_blue" />
+
+    </LinearLayout>
+
+    <!-- Stop Content -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="8dp">
+
+        <!-- Station Name -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/stationLayout"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Station Name"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusTopStart="8dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/stationAutoComplete"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:inputType="text"
+                android:paddingVertical="16dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Times and Fare Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <!-- Arrival Time -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Arr:"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/arrivalTimeInput"
+                    android:layout_width="60dp"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/bg_time_input"
+                    android:gravity="center"
+                    android:hint="--:--"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:textSize="12sp"
+                    android:padding="4dp" />
+
+            </LinearLayout>
+
+            <!-- Departure Time -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginStart="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dep:"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/departureTimeInput"
+                    android:layout_width="60dp"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/bg_time_input"
+                    android:gravity="center"
+                    android:hint="--:--"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:textSize="12sp"
+                    android:padding="4dp" />
+
+            </LinearLayout>
+
+            <!-- Spacer -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <!-- Fare -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fare: ৳"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fareInput"
+                    android:layout_width="50dp"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/bg_time_input"
+                    android:gravity="center"
+                    android:hint="0"
+                    android:inputType="numberDecimal"
+                    android:textSize="12sp"
+                    android:padding="4dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Menu/Delete button -->
+    <ImageButton
+        android:id="@+id/menuButton"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_menu_dots"
+        android:contentDescription="Options"
+        app:tint="?attr/colorOnSurfaceVariant" />
+
+</LinearLayout>

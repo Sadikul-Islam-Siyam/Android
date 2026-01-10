@@ -41,11 +41,10 @@ public class SchedulesFragment extends Fragment {
         setupObservers();
         loadSchedules();
 
+        // FAB removed - Route Management now handles schedule changes
         FloatingActionButton fab = view.findViewById(R.id.fab_add_schedule);
         if (fab != null) {
-            fab.setOnClickListener(v -> {
-                Navigation.findNavController(view).navigate(R.id.action_editApi_to_addSchedule);
-            });
+            fab.setVisibility(View.GONE);
         }
     }
 

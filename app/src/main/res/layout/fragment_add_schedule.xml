@@ -4,80 +4,120 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:padding="16dp">
+    android:background="@color/surface">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Gradient Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@drawable/gradient_header"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="20dp">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add New Schedule"
+                android:textColor="@android:color/white"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create a new transport schedule"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:alpha="0.9"
+                android:layout_marginTop="2dp" />
+
+        </LinearLayout>
+
+        <!-- Form Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp">
+            android:layout_margin="16dp"
+            android:layout_marginTop="-16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Add New Schedule"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="16dp" />
+                android:padding="20dp">
 
                 <!-- Transport Type -->
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Transport Type"
                     android:textSize="14sp"
-                    android:layout_marginBottom="4dp" />
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:layout_marginBottom="8dp" />
 
                 <Spinner
                     android:id="@+id/spinner_transport_type"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp" />
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/card_bg_blue"
+                    android:padding="12dp" />
 
                 <!-- Origin -->
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Origin"
                     android:textSize="14sp"
-                    android:layout_marginBottom="4dp" />
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:layout_marginBottom="8dp" />
 
                 <Spinner
                     android:id="@+id/spinner_origin"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp" />
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/card_bg_blue"
+                    android:padding="12dp" />
 
                 <!-- Destination -->
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Destination"
                     android:textSize="14sp"
-                    android:layout_marginBottom="4dp" />
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:layout_marginBottom="8dp" />
 
                 <Spinner
                     android:id="@+id/spinner_destination"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp" />
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/card_bg_blue"
+                    android:padding="12dp" />
 
                 <!-- Departure Time -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Departure Time (HH:mm)"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
                     android:layout_marginBottom="12dp">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -92,6 +132,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Arrival Time (HH:mm)"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
                     android:layout_marginBottom="12dp">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -106,6 +151,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Fare (৳)"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
                     android:layout_marginBottom="12dp">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -120,6 +170,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Operator Name"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
                     android:layout_marginBottom="12dp">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -134,7 +189,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Train Number (optional)"
-                    android:layout_marginBottom="16dp">
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    android:layout_marginBottom="20dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edit_train_number"
@@ -147,8 +207,9 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_submit"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Submit Schedule" />
+                    android:layout_height="52dp"
+                    android:text="Submit Schedule"
+                    app:cornerRadius="12dp" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

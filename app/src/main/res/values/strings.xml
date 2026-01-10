@@ -88,4 +88,92 @@
     <string name="loading">Loading...</string>
     <string name="error_occurred">An error occurred</string>
     <string name="success">Success</string>
+    
+    <!-- Help Guide -->
+    <string name="help">Help</string>
+    <string name="help_login_guide"><b>Login Page Guide</b>\n\n
+        <b>1. Getting Started:</b>\n
+        • Enter your registered email address\n
+        • Enter your password\n
+        • Click the Login button\n\n
+        <b>2. New User?</b>\n
+        • Click "Register" at the bottom to create a new account\n
+        • Choose User or Developer role during registration\n\n
+        <b>3. Forgot Password?</b>\n
+        • Click the "Forgot Password?" link\n
+        • Follow the instructions to reset your password\n\n
+        <b>4. Master Account:</b>\n
+        • Master users have special privileges\n
+        • Contact system admin for master credentials\n
+    </string>
+    
+    <string name="help_user_guide"><b>User Dashboard Guide</b>\n\n
+        <b>1. Create Plan:</b>\n
+        • Search for routes by origin and destination\n
+        • Filter by transport type (Bus/Train)\n
+        • Add multiple legs to create a journey\n
+        • Save your travel plan for future reference\n\n
+        <b>2. Saved Plans:</b>\n
+        • View all your saved travel plans\n
+        • Tap on a plan to see details\n
+        • Edit or delete plans as needed\n\n
+        <b>3. Route Finder:</b>\n
+        • Quick search for available routes\n
+        • Enter origin and destination cities\n
+        • Select date and transport type\n
+        • View schedules with timings and fares\n\n
+        <b>4. Navigation Tips:</b>\n
+        • Use the back button to return to previous screen\n
+        • Tap + button to create new plans\n
+        • Logout when finished using the app\n
+    </string>
+    
+    <string name="help_developer_guide"><b>Developer Dashboard Guide</b>\n\n
+        <b>1. Manage Schedules:</b>\n
+        • Add new bus/train schedules\n
+        • Update departure and arrival times\n
+        • Set fare information and seat availability\n
+        • Delete outdated schedules\n\n
+        <b>2. Manage Routes:</b>\n
+        • Create new routes between cities\n
+        • Update route information\n
+        • Set transport type for routes\n
+        • Delete unused routes\n\n
+        <b>3. My Requests:</b>\n
+        • View your pending schedule/route requests\n
+        • Check approval status\n
+        • Resubmit rejected requests\n\n
+        <b>4. Route Finder:</b>\n
+        • Search and verify routes in the system\n
+        • Test route availability for users\n\n
+        <b>5. Best Practices:</b>\n
+        • Submit accurate schedule information\n
+        • Keep schedules up to date\n
+        • Wait for master approval before changes go live\n
+    </string>
+    
+    <string name="help_master_guide"><b>Master Dashboard Guide</b>\n\n
+        <b>1. Account Approvals:</b>\n
+        • Review pending user registrations\n
+        • Approve or reject new accounts\n
+        • Verify user credentials before approval\n\n
+        <b>2. Manage Users:</b>\n
+        • View all system users\n
+        • Change user roles (User/Developer/Master)\n
+        • Lock/unlock user accounts\n
+        • Monitor user activity\n\n
+        <b>3. Request History:</b>\n
+        • View all schedule/route requests\n
+        • Track approval/rejection history\n
+        • Audit system changes\n\n
+        <b>4. Route Finder:</b>\n
+        • Monitor available routes in the system\n
+        • Verify schedule accuracy\n\n
+        <b>5. Master Responsibilities:</b>\n
+        • Maintain system integrity\n
+        • Ensure data quality\n
+        • Handle user management carefully\n
+        • Review developer submissions promptly\n
+        • Keep audit logs for accountability\n
+    </string>
 </resources>

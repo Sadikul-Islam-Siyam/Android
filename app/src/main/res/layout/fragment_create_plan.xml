@@ -2,7 +2,8 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/surface">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -12,216 +13,308 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
-            <!-- Plan Name -->
-            <com.google.android.material.textfield.TextInputLayout
+            <!-- Gradient Header -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Plan Name"
-                app:startIconDrawable="@android:drawable/ic_menu_edit"
-                android:layout_marginBottom="16dp">
+                android:layout_height="120dp"
+                android:background="@drawable/gradient_header"
+                android:orientation="vertical"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edit_plan_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Search Routes Section -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🔍 Search Routes"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="12dp" />
-
-            <!-- Origin -->
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="From (Origin)"
-                app:startIconDrawable="@android:drawable/ic_menu_mylocation"
-                android:layout_marginBottom="12dp">
-
-                <AutoCompleteTextView
-                    android:id="@+id/autocomplete_origin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:completionThreshold="1" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Destination -->
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="To (Destination)"
-                app:startIconDrawable="@android:drawable/ic_menu_mylocation"
-                android:layout_marginBottom="12dp">
-
-                <AutoCompleteTextView
-                    android:id="@+id/autocomplete_destination"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:completionThreshold="1" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Travel Date -->
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Travel Date"
-                app:startIconDrawable="@android:drawable/ic_menu_my_calendar"
-                android:layout_marginBottom="12dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edit_text_date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:clickable="true"
-                    android:inputType="none" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Transport Type Filter -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Transport Type"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chip_group_transport"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:singleSelection="false"
-                app:selectionRequired="false"
-                android:layout_marginBottom="16dp">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_all"
-                    style="@style/Widget.Material3.Chip.Filter"
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="All"
-                    android:checked="true" />
+                    android:text="Create Plan"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_bus"
-                    style="@style/Widget.Material3.Chip.Filter"
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🚌 Bus Only" />
+                    android:text="Build your multi-leg journey"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:alpha="0.9"
+                    android:layout_marginTop="4dp" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_train"
-                    style="@style/Widget.Material3.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🚆 Train Only" />
+            </LinearLayout>
 
-            </com.google.android.material.chip.ChipGroup>
-
-            <!-- Search Button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/button_search_routes"
+            <!-- Content Section -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Search Available Routes"
-                app:icon="@android:drawable/ic_menu_search"
-                android:layout_marginBottom="20dp" />
+                android:orientation="vertical"
+                android:layout_marginTop="-16dp"
+                android:padding="16dp">
 
-            <!-- Search Results -->
-            <TextView
-                android:id="@+id/text_search_results"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="📋 Available Routes"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:visibility="gone"
-                android:layout_marginBottom="12dp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_search_results"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:nestedScrollingEnabled="false"
-                android:layout_marginBottom="20dp" />
-
-            <!-- Selected Legs (Bucket) -->
-            <TextView
-                android:id="@+id/text_selected_legs"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🎒 Your Journey (0 legs)"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:visibility="gone"
-                android:layout_marginBottom="12dp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_selected_legs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:nestedScrollingEnabled="false"
-                android:layout_marginBottom="20dp" />
-
-            <!-- Total Summary -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_summary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:cardBackgroundColor="?attr/colorPrimaryContainer"
-                app:cardCornerRadius="12dp"
-                android:layout_marginBottom="80dp">
-
-                <LinearLayout
+                <!-- Plan Name Card -->
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginBottom="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Journey Summary"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="8dp" />
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-                    <TextView
-                        android:id="@+id/text_total_fare"
-                        android:layout_width="wrap_content"
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Plan Name"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                            app:startIconDrawable="@android:drawable/ic_menu_edit"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusBottomEnd="12dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edit_plan_name"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="text" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Search Routes Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="@color/card_blue"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Total Fare: ৳0.00" />
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-                    <TextView
-                        android:id="@+id/text_total_duration"
-                        android:layout_width="wrap_content"
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Search Routes"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/primary"
+                            android:layout_marginBottom="16dp" />
+
+                        <!-- Origin -->
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="From (Origin)"
+                            app:startIconDrawable="@android:drawable/ic_menu_mylocation"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusBottomEnd="12dp"
+                            android:layout_marginBottom="12dp">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/autocomplete_origin"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="text"
+                                android:completionThreshold="1" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <!-- Destination -->
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="To (Destination)"
+                            app:startIconDrawable="@android:drawable/ic_menu_directions"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusBottomEnd="12dp"
+                            android:layout_marginBottom="12dp">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/autocomplete_destination"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="text"
+                                android:completionThreshold="1" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <!-- Travel Date -->
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Travel Date"
+                            app:startIconDrawable="@android:drawable/ic_menu_my_calendar"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusBottomEnd="12dp"
+                            android:layout_marginBottom="16dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edit_text_date"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:focusable="false"
+                                android:clickable="true"
+                                android:inputType="none" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <!-- Transport Type Filter -->
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Transport Type"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="8dp" />
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/chip_group_transport"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:singleSelection="false"
+                            app:selectionRequired="false"
+                            android:layout_marginBottom="16dp">
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chip_all"
+                                style="@style/Widget.Material3.Chip.Filter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="All"
+                                android:checked="true" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chip_bus"
+                                style="@style/Widget.Material3.Chip.Filter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Bus Only" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chip_train"
+                                style="@style/Widget.Material3.Chip.Filter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Train Only" />
+
+                        </com.google.android.material.chip.ChipGroup>
+
+                        <!-- Search Button -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/button_search_routes"
+                            android:layout_width="match_parent"
+                            android:layout_height="52dp"
+                            android:text="Search Available Routes"
+                            app:icon="@android:drawable/ic_menu_search"
+                            app:cornerRadius="12dp" />
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Search Results -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/text_search_results"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Available Routes"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:visibility="gone"
+                    android:layout_marginBottom="12dp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_search_results"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_marginBottom="20dp" />
+
+                <!-- Selected Legs (Bucket) -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/text_selected_legs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your Journey (0 legs)"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:visibility="gone"
+                    android:layout_marginBottom="12dp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_selected_legs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_marginBottom="20dp" />
+
+                <!-- Total Summary -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_summary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="@color/card_green"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginBottom="80dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Total Duration: 0 mins" />
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Journey Summary"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:textColor="#388E3C"
+                            android:layout_marginBottom="8dp" />
 
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_total_fare"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Total Fare: ৳0.00"
+                            android:textSize="14sp" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_total_duration"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Total Duration: 0 mins"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

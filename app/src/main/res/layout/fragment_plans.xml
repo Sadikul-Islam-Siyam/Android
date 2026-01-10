@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface">
+    android:background="@color/surface">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -12,33 +12,62 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
-            <com.google.android.material.textview.MaterialTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/saved_plans"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp" />
-
-            <TextView
-                android:id="@+id/text_empty_state"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="No saved plans yet.\nTap + to create your first journey!"
-                android:textAlignment="center"
-                android:textSize="16sp"
-                android:layout_gravity="center"
-                android:visibility="gone"
-                android:layout_marginTop="40dp"
-                android:layout_marginBottom="20dp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/plans_recycler_view"
+            <!-- Gradient Header -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="120dp"
+                android:background="@drawable/gradient_header"
+                android:orientation="vertical"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/saved_plans"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your saved travel journeys"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:alpha="0.9"
+                    android:layout_marginTop="4dp" />
+
+            </LinearLayout>
+
+            <!-- Content -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="-16dp"
+                android:padding="16dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/text_empty_state"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No saved plans yet.\nTap + to create your first journey!"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textColor="@color/on_surface_variant"
+                    android:visibility="gone"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="20dp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/plans_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

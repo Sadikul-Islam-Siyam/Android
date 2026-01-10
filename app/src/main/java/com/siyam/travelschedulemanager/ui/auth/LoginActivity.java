@@ -2,6 +2,7 @@ package com.siyam.travelschedulemanager.ui.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -10,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -21,11 +23,12 @@ import com.siyam.travelschedulemanager.dashboard.user.UserDashboardActivity;
 import com.siyam.travelschedulemanager.model.User;
 import com.siyam.travelschedulemanager.util.Constants;
 import com.siyam.travelschedulemanager.util.ValidationUtils;
+import com.siyam.travelschedulemanager.util.ThemeManager;
 import com.siyam.travelschedulemanager.viewmodel.AuthViewModel;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText emailInput, passwordInput;
-    private Button loginButton;
+    private Button loginButton, helpButton;
     private TextView registerLink, forgotPasswordLink;
     private ProgressBar progressBar;
     private AuthViewModel authViewModel;
@@ -36,6 +39,10 @@ public class LoginActivity extends AppCompatActivity {
         
         // Initialize Firebase
         FirebaseApp.initializeApp(this);
+        
+        // Apply saved theme
+        ThemeManager themeManager = new ThemeManager(this);
+        themeManager.applyTheme();
         
         setContentView(R.layout.activity_login);
 
@@ -50,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
         emailInput = findViewById(R.id.email_input);
         passwordInput = findViewById(R.id.password_input);
         loginButton = findViewById(R.id.login_button);
+        helpButton = findViewById(R.id.help_button);
         registerLink = findViewById(R.id.register_link);
         forgotPasswordLink = findViewById(R.id.forgot_password_link);
         progressBar = findViewById(R.id.progress_bar);
@@ -105,6 +113,17 @@ public class LoginActivity extends AppCompatActivity {
             // Show forgot password dialog
             showForgotPasswordDialog();
         });
+        
+        helpButton.setOnClickListener(v -> showHelpDialog());
+    }
+    
+    private void showHelpDialog() {
+        String helpText = getString(R.string.help_login_guide);
+        new AlertDialog.Builder(this)
+                .setTitle("Help Guide")
+                .setMessage(Html.fromHtml(helpText, Html.FROM_HTML_MODE_LEGACY))
+                .setPositiveButton("Close", null)
+                .show();
     }
 
     private void handleLogin() {

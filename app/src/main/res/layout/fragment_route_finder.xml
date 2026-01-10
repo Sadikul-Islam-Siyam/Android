@@ -3,160 +3,215 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:background="@color/surface">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="vertical">
 
-        <com.google.android.material.card.MaterialCardView
+        <!-- Gradient Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="@drawable/gradient_header"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="20dp">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Route Finder"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Find the best routes for your journey"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:alpha="0.9"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <!-- Content Section -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="?attr/colorSurfaceVariant"
-            android:layout_marginBottom="20dp">
+            android:orientation="vertical"
+            android:layout_marginTop="-16dp"
+            android:padding="16dp">
 
-            <LinearLayout
+            <!-- Search Card -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/card_blue"
+                android:layout_marginBottom="20dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🗺 Plan Your Journey"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:layout_marginBottom="20dp" />
-
-                <!-- Origin Search -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/input_layout_origin"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="From (Origin)"
-                    app:startIconDrawable="@android:drawable/ic_menu_mylocation"
-                    android:layout_marginBottom="16dp">
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edit_text_origin"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Destination Search -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/input_layout_destination"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="To (Destination)"
-                    app:startIconDrawable="@android:drawable/ic_menu_mylocation"
-                    android:layout_marginBottom="16dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edit_text_destination"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Date Picker -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/input_layout_date"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Travel Date"
-                    app:startIconDrawable="@android:drawable/ic_menu_my_calendar"
-                    android:layout_marginBottom="16dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edit_text_date"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:focusable="false"
-                        android:clickable="true"
-                        android:inputType="none" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Transport Type Filter -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Transport Type"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:layout_marginBottom="12dp" />
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chip_group_transport"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:singleSelection="false"
-                    app:selectionRequired="false"
-                    android:layout_marginBottom="20dp">
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_all"
-                        style="@style/Widget.Material3.Chip.Filter"
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="All"
-                        android:checked="true" />
+                        android:text="Plan Your Journey"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary"
+                        android:layout_marginBottom="16dp" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_bus"
-                        style="@style/Widget.Material3.Chip.Filter"
+                    <!-- Origin Search -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/input_layout_origin"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="From (Origin)"
+                        app:startIconDrawable="@android:drawable/ic_menu_mylocation"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        android:layout_marginBottom="16dp">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/edit_text_origin"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:completionThreshold="1" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Destination Search -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/input_layout_destination"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="To (Destination)"
+                        app:startIconDrawable="@android:drawable/ic_menu_directions"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        android:layout_marginBottom="16dp">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/edit_text_destination"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:completionThreshold="1" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Date Picker -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/input_layout_date"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Travel Date"
+                        app:startIconDrawable="@android:drawable/ic_menu_my_calendar"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        android:layout_marginBottom="16dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edit_text_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:clickable="true"
+                            android:inputType="none" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Transport Type Filter -->
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🚌 Bus Only" />
+                        android:text="Transport Type"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="12dp" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_train"
-                        style="@style/Widget.Material3.Chip.Filter"
-                        android:layout_width="wrap_content"
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/chip_group_transport"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="🚆 Train Only" />
+                        app:singleSelection="false"
+                        app:selectionRequired="false"
+                        android:layout_marginBottom="20dp">
 
-                </com.google.android.material.chip.ChipGroup>
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_all"
+                            style="@style/Widget.Material3.Chip.Filter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="All"
+                            android:checked="true" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button_find_routes"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:text="Find Optimal Routes"
-                    android:textSize="16sp"
-                    app:icon="@android:drawable/ic_menu_search"
-                    app:iconGravity="textStart" />
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_bus"
+                            style="@style/Widget.Material3.Chip.Filter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Bus Only" />
 
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_train"
+                            style="@style/Widget.Material3.Chip.Filter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Train Only" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="📍 Route Results"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="12dp" />
+                    </com.google.android.material.chip.ChipGroup>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_routes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="200dp" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_find_routes"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:text="Find Optimal Routes"
+                        android:textSize="16sp"
+                        app:icon="@android:drawable/ic_menu_search"
+                        app:iconGravity="textStart"
+                        app:cornerRadius="12dp" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Results Section -->
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Route Results"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/primary"
+                android:layout_marginBottom="12dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_routes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="200dp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

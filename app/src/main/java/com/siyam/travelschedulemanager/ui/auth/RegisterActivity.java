@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText usernameInput, emailInput, passwordInput, confirmPasswordInput;
     private AutoCompleteTextView roleSpinner;
     private Button registerButton;
+    private ImageButton backButton;
     private TextView loginLink;
     private ProgressBar progressBar;
     private AuthViewModel authViewModel;
@@ -48,6 +50,7 @@ public class RegisterActivity extends AppCompatActivity {
         passwordInput = findViewById(R.id.password_input);
         confirmPasswordInput = findViewById(R.id.confirm_password_input);
         registerButton = findViewById(R.id.register_button);
+        backButton = findViewById(R.id.back_button);
         loginLink = findViewById(R.id.login_link);
         progressBar = findViewById(R.id.progress_bar);
         
@@ -82,6 +85,8 @@ public class RegisterActivity extends AppCompatActivity {
         registerButton.setOnClickListener(v -> handleRegister());
 
         loginLink.setOnClickListener(v -> finish());
+        
+        backButton.setOnClickListener(v -> finish());
     }
 
     private void handleRegister() {

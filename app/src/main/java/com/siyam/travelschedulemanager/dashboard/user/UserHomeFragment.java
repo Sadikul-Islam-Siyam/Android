@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.siyam.travelschedulemanager.R;
 import com.siyam.travelschedulemanager.data.firebase.AuthRepository;
@@ -37,7 +38,9 @@ public class UserHomeFragment extends Fragment {
         MaterialCardView cardCreatePlan = view.findViewById(R.id.card_create_plan);
         MaterialCardView cardSavedPlans = view.findViewById(R.id.card_saved_plans);
         MaterialCardView cardRouteFinder = view.findViewById(R.id.card_route_finder);
+        MaterialCardView cardProfile = view.findViewById(R.id.card_profile);
         MaterialCardView cardLogout = view.findViewById(R.id.card_logout);
+        MaterialButton helpButton = view.findViewById(R.id.help_button);
 
         NavController navController = Navigation.findNavController(view);
 
@@ -53,10 +56,18 @@ public class UserHomeFragment extends Fragment {
             navController.navigate(R.id.action_userHome_to_routeFinder);
         });
 
+        cardProfile.setOnClickListener(v -> {
+            navController.navigate(R.id.action_userHome_to_profile);
+        });
+
         cardLogout.setOnClickListener(v -> {
             authRepository.signOut();
             startActivity(new Intent(requireContext(), LoginActivity.class));
             requireActivity().finish();
+        });
+        
+        helpButton.setOnClickListener(v -> {
+            navController.navigate(R.id.action_userHome_to_help);
         });
     }
 }

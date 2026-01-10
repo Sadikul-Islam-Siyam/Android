@@ -17,6 +17,12 @@
         <action
             android:id="@+id/action_userHome_to_routeFinder"
             app:destination="@id/routeFinderFragment" />
+        <action
+            android:id="@+id/action_userHome_to_profile"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_userHome_to_help"
+            app:destination="@id/helpFragment" />
     </fragment>
 
     <fragment
@@ -37,5 +43,15 @@
         android:id="@+id/routeFinderFragment"
         android:name="com.siyam.travelschedulemanager.ui.route.RouteFinderFragment"
         android:label="Route Finder" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.siyam.travelschedulemanager.ui.profile.ProfileFragment"
+        android:label="My Profile" />
+
+    <fragment
+        android:id="@+id/helpFragment"
+        android:name="com.siyam.travelschedulemanager.ui.help.HelpFragment"
+        android:label="Help" />
 
 </navigation>

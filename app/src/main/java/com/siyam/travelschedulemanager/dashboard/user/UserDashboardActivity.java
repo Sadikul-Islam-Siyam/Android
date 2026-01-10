@@ -34,6 +34,13 @@ public class UserDashboardActivity extends AppCompatActivity {
         Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.user_nav_host_fragment);
         if (navHostFragment != null) {
             navController = ((NavHostFragment) navHostFragment).getNavController();
+            
+            // Enable back button
+            navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(destination.getId() != R.id.userHomeFragment);
+                }
+            });
         }
 
         // Load current user
@@ -45,6 +52,11 @@ public class UserDashboardActivity extends AppCompatActivity {
                 toolbar.setTitle("Welcome, " + user.getUsername());
             }
         });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        return navController != null && navController.navigateUp() || super.onSupportNavigateUp();
     }
 
     @Override

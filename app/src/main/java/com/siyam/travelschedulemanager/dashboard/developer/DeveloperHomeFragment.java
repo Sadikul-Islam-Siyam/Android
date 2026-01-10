@@ -34,27 +34,12 @@ public class DeveloperHomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        MaterialCardView cardCreatePlan = view.findViewById(R.id.card_create_plan);
-        MaterialCardView cardSavedPlans = view.findViewById(R.id.card_saved_plans);
-        MaterialCardView cardRouteFinder = view.findViewById(R.id.card_route_finder);
         MaterialCardView cardEditApi = view.findViewById(R.id.card_edit_api);
         MaterialCardView cardApproveUsers = view.findViewById(R.id.card_approve_users);
         MaterialCardView cardEditHistory = view.findViewById(R.id.card_edit_history);
         MaterialCardView cardLogout = view.findViewById(R.id.card_logout);
 
         NavController navController = Navigation.findNavController(view);
-
-        cardCreatePlan.setOnClickListener(v -> {
-            // Navigate to create plan
-        });
-
-        cardSavedPlans.setOnClickListener(v -> {
-            navController.navigate(R.id.action_developerHome_to_savedPlans);
-        });
-
-        cardRouteFinder.setOnClickListener(v -> {
-            navController.navigate(R.id.action_developerHome_to_routeFinder);
-        });
 
         cardEditApi.setOnClickListener(v -> {
             navController.navigate(R.id.action_developerHome_to_editApi);

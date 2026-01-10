@@ -48,7 +48,7 @@ public class ApproveAccountsFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
-        // Master can approve ALL roles
+        // Load ALL pending users (USER + DEVELOPER roles)
         adminViewModel.loadPendingUsers();
 
         adminViewModel.getPendingUsers().observe(getViewLifecycleOwner(), users -> {
@@ -58,6 +58,12 @@ public class ApproveAccountsFragment extends Fragment {
         adminViewModel.getMessage().observe(getViewLifecycleOwner(), message -> {
             if (message != null && !message.isEmpty()) {
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        adminViewModel.getError().observe(getViewLifecycleOwner(), error -> {
+            if (error != null && !error.isEmpty()) {
+                Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show();
             }
         });
     }

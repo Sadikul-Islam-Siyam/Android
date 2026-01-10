@@ -38,7 +38,16 @@
     <fragment
         android:id="@+id/editApiFragment"
         android:name="com.siyam.travelschedulemanager.ui.schedule.SchedulesFragment"
-        android:label="Edit API Data" />
+        android:label="Edit API Data">
+        <action
+            android:id="@+id/action_editApi_to_addSchedule"
+            app:destination="@id/addScheduleFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addScheduleFragment"
+        android:name="com.siyam.travelschedulemanager.ui.schedule.AddScheduleFragment"
+        android:label="Add Schedule" />
 
     <fragment
         android:id="@+id/approveUsersFragment"

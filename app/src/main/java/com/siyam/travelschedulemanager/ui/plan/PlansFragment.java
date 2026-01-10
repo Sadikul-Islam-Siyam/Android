@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,6 +26,7 @@ public class PlansFragment extends Fragment {
     private RecyclerView recyclerView;
     private PlanAdapter adapter;
     private AuthRepository authRepository;
+    private TextView emptyStateText;
 
     @Nullable
     @Override
@@ -39,6 +42,7 @@ public class PlansFragment extends Fragment {
         authRepository = new AuthRepository();
         planViewModel = new ViewModelProvider(requireActivity()).get(PlanViewModel.class);
 
+        emptyStateText = view.findViewById(R.id.text_empty_state);
         setupRecyclerView(view);
         setupObservers();
         loadPlans();
@@ -47,7 +51,7 @@ public class PlansFragment extends Fragment {
         if (fab != null) {
             fab.setOnClickListener(v -> {
                 // Navigate to create plan
-                Toast.makeText(requireContext(), "Create Plan - Coming soon", Toast.LENGTH_SHORT).show();
+                Navigation.findNavController(v).navigate(R.id.action_plans_to_create_plan);
             });
         }
     }
@@ -63,6 +67,14 @@ public class PlansFragment extends Fragment {
         planViewModel.getPlans().observe(getViewLifecycleOwner(), plans -> {
             if (plans != null) {
                 adapter.setPlans(plans);
+                // Show/hide empty state
+                if (plans.isEmpty()) {
+                    emptyStateText.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                } else {
+                    emptyStateText.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                }
             }
         });
 

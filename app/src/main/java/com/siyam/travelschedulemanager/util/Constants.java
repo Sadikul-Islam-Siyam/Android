@@ -35,8 +35,19 @@ public class Constants {
     public static final String COLLECTION_PLANS = "plans";
     public static final String COLLECTION_SCHEDULES = "schedules";
     public static final String COLLECTION_ROUTES = "routes";
-    public static final String COLLECTION_PENDING_ROUTES = "pendingRoutes";
-
+    public static final String COLLECTION_PENDING_ROUTES = "pendingRoutes";    public static final String COLLECTION_AUDIT_LOGS = "audit_logs";
+    
+    // Audit Actions
+    public static final String ACTION_CREATE = "CREATE";
+    public static final String ACTION_UPDATE = "UPDATE";
+    public static final String ACTION_DELETE = "DELETE";
+    public static final String ACTION_APPROVE = "APPROVE";
+    public static final String ACTION_REJECT = "REJECT";
+    public static final String ACTION_LOGIN = "LOGIN";
+    public static final String ACTION_LOGOUT = "LOGOUT";
+    public static final String ACTION_LOCK = "LOCK";
+    public static final String ACTION_UNLOCK = "UNLOCK";
+    public static final String ACTION_ROLE_CHANGE = "ROLE_CHANGE";
     // Preferences Keys
     public static final String PREF_THEME = "theme";
     public static final String PREF_LANGUAGE = "language";

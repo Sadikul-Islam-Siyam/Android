@@ -47,9 +47,24 @@ public class PlanViewModel extends ViewModel {
                     List<Plan> planList = new ArrayList<>();
                     for (QueryDocumentSnapshot document : querySnapshot) {
                         Plan plan = document.toObject(Plan.class);
+                        plan.setId(document.getId()); // Ensure ID is set
                         planList.add(plan);
                     }
+                    
+                    // Sort by created date (newest first)
+                    planList.sort((p1, p2) -> {
+                        if (p1.getCreatedDate() == null || p2.getCreatedDate() == null) {
+                            return 0;
+                        }
+                        return p2.getCreatedDate().compareTo(p1.getCreatedDate());
+                    });
+                    
                     plans.setValue(planList);
+                    
+                    // Debug message
+                    if (planList.isEmpty()) {
+                        message.setValue("No saved plans yet");
+                    }
                 })
                 .addOnFailureListener(e -> {
                     error.setValue("Failed to load plans: " + e.getMessage());

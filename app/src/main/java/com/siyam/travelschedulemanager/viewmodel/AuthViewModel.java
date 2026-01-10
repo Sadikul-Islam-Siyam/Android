@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModel;
 import com.google.firebase.Timestamp;
 import com.siyam.travelschedulemanager.data.firebase.AuthRepository;
 import com.siyam.travelschedulemanager.data.firebase.UserRepository;
+import com.siyam.travelschedulemanager.data.firebase.AuditLogRepository;
 import com.siyam.travelschedulemanager.model.User;
+import com.siyam.travelschedulemanager.model.AuditLog;
 import com.siyam.travelschedulemanager.util.Constants;
 
 import java.util.Date;
@@ -15,6 +17,7 @@ import java.util.Date;
 public class AuthViewModel extends ViewModel {
     private final AuthRepository authRepository;
     private final UserRepository userRepository;
+    private final AuditLogRepository auditLogRepository;
     private final MutableLiveData<AuthResult> authResult = new MutableLiveData<>();
     private final MutableLiveData<User> currentUser = new MutableLiveData<>();
     private final MutableLiveData<String> error = new MutableLiveData<>();
@@ -22,6 +25,7 @@ public class AuthViewModel extends ViewModel {
     public AuthViewModel() {
         this.authRepository = new AuthRepository();
         this.userRepository = new UserRepository();
+        this.auditLogRepository = new AuditLogRepository();
     }
 
     public LiveData<AuthResult> getAuthResult() {
@@ -37,29 +41,36 @@ public class AuthViewModel extends ViewModel {
     }
 
     /**
-     * Register new user
+     * Register new user with default USER role
      */
     public void register(String username, String email, String password) {
+        registerWithRole(username, email, password, Constants.ROLE_USER);
+    }
+    
+    /**
+     * Register new user with specified role
+     */
+    public void registerWithRole(String username, String email, String password, String role) {
         authRepository.register(email, password)
                 .addOnSuccessListener(result -> {
                     String uid = result.getUser().getUid();
                     
                     // Auto-approve master@travel.com as MASTER role
-                    final String role;
+                    final String finalRole;
                     final String status;
                     final String successMessage;
                     
                     if (email.equalsIgnoreCase("master@travel.com")) {
-                        role = Constants.ROLE_MASTER;
+                        finalRole = Constants.ROLE_MASTER;
                         status = Constants.STATUS_APPROVED;
                         successMessage = "Registration successful. You can now login.";
                     } else {
-                        role = Constants.ROLE_USER;
+                        finalRole = role;
                         status = Constants.STATUS_PENDING;
                         successMessage = "Registration successful. Awaiting approval.";
                     }
                     
-                    User user = new User(uid, username, email, role, status);
+                    User user = new User(uid, username, email, finalRole, status);
                     
                     userRepository.createUser(user)
                             .addOnSuccessListener(aVoid -> {
@@ -140,6 +151,17 @@ public class AuthViewModel extends ViewModel {
                                         userRepository.resetFailedAttempts(uid);
                                     }
                                     
+                                    // Create audit log for successful login
+                                    auditLogRepository.createAuditLog(
+                                        user.getUid(),
+                                        user.getUsername(),
+                                        user.getRole(),
+                                        Constants.ACTION_LOGIN,
+                                        "user",
+                                        user.getUid(),
+                                        "Successful login"
+                                    );
+                                    
                                     currentUser.setValue(user);
                                     authResult.setValue(new AuthResult(true, "Login successful"));
                                 } else {
@@ -179,6 +201,17 @@ public class AuthViewModel extends ViewModel {
                                 Constants.ROLE_MASTER, Constants.STATUS_APPROVED);
                         userRepository.createUser(masterUser)
                                 .addOnSuccessListener(aVoid -> {
+                                    // Create audit log for master account creation
+                                    auditLogRepository.createAuditLog(
+                                        masterUser.getUid(),
+                                        masterUser.getUsername(),
+                                        masterUser.getRole(),
+                                        Constants.ACTION_LOGIN,
+                                        "user",
+                                        masterUser.getUid(),
+                                        "Master account created and logged in"
+                                    );
+                                    
                                     currentUser.setValue(masterUser);
                                     authResult.setValue(new AuthResult(true, "Master account created and logged in"));
                                 })
@@ -191,6 +224,17 @@ public class AuthViewModel extends ViewModel {
                         user.setStatus(Constants.STATUS_APPROVED);
                         userRepository.updateUser(uid, user)
                                 .addOnSuccessListener(aVoid -> {
+                                    // Create audit log for master login
+                                    auditLogRepository.createAuditLog(
+                                        user.getUid(),
+                                        user.getUsername(),
+                                        user.getRole(),
+                                        Constants.ACTION_LOGIN,
+                                        "user",
+                                        user.getUid(),
+                                        "Master login successful"
+                                    );
+                                    
                                     currentUser.setValue(user);
                                     authResult.setValue(new AuthResult(true, "Login successful"));
                                 })
@@ -209,6 +253,20 @@ public class AuthViewModel extends ViewModel {
      * Sign out
      */
     public void signOut() {
+        // Create audit log before signing out
+        User logoutUser = currentUser.getValue();
+        if (logoutUser != null) {
+            auditLogRepository.createAuditLog(
+                logoutUser.getUid(),
+                logoutUser.getUsername(),
+                logoutUser.getRole(),
+                Constants.ACTION_LOGOUT,
+                "user",
+                logoutUser.getUid(),
+                "User logged out"
+            );
+        }
+        
         authRepository.signOut();
         currentUser.setValue(null);
         authResult.setValue(new AuthResult(true, "Signed out"));

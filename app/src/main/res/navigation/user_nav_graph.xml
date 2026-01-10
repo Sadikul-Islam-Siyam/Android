@@ -9,6 +9,9 @@
         android:name="com.siyam.travelschedulemanager.dashboard.user.UserHomeFragment"
         android:label="Home">
         <action
+            android:id="@+id/action_userHome_to_createPlan"
+            app:destination="@id/createPlanFragment" />
+        <action
             android:id="@+id/action_userHome_to_savedPlans"
             app:destination="@id/savedPlansFragment" />
         <action
@@ -17,9 +20,18 @@
     </fragment>
 
     <fragment
+        android:id="@+id/createPlanFragment"
+        android:name="com.siyam.travelschedulemanager.ui.plan.CreatePlanFragment"
+        android:label="Create Plan" />
+
+    <fragment
         android:id="@+id/savedPlansFragment"
         android:name="com.siyam.travelschedulemanager.ui.plan.PlansFragment"
-        android:label="Saved Plans" />
+        android:label="Saved Plans">
+        <action
+            android:id="@+id/action_plans_to_create_plan"
+            app:destination="@id/createPlanFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/routeFinderFragment"

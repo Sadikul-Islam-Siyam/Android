@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.google.android.material.card.MaterialCardView;
 import com.siyam.travelschedulemanager.R;
@@ -17,10 +19,16 @@ import com.siyam.travelschedulemanager.model.User;
 import com.siyam.travelschedulemanager.ui.auth.LoginActivity;
 import com.siyam.travelschedulemanager.util.Constants;
 import com.siyam.travelschedulemanager.viewmodel.AuthViewModel;
+import com.siyam.travelschedulemanager.viewmodel.ScheduleViewModel;
+import com.siyam.travelschedulemanager.viewmodel.PlanViewModel;
 
 public class HomeFragment extends Fragment {
     private AuthViewModel authViewModel;
+    private ScheduleViewModel scheduleViewModel;
+    private PlanViewModel planViewModel;
     private User currentUser;
+    
+    private TextView welcomeText, statsSchedules, statsPlans, statsRoutes;
 
     @Nullable
     @Override
@@ -34,10 +42,31 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
+        scheduleViewModel = new ViewModelProvider(requireActivity()).get(ScheduleViewModel.class);
+        planViewModel = new ViewModelProvider(requireActivity()).get(PlanViewModel.class);
+        
+        initViews(view);
         authViewModel.loadCurrentUser();
 
         setupObservers();
         setupClickListeners(view);
+        loadStatistics();
+    }
+    
+    private void initViews(View view) {
+        welcomeText = view.findViewById(R.id.text_welcome);
+        statsSchedules = view.findViewById(R.id.stats_schedules);
+        statsPlans = view.findViewById(R.id.stats_plans);
+        statsRoutes = view.findViewById(R.id.stats_routes);
+    }
+    
+    private void loadStatistics() {
+        scheduleViewModel.loadAllSchedules();
+        authViewModel.getCurrentUser().observe(getViewLifecycleOwner(), user -> {
+            if (user != null) {
+                planViewModel.loadUserPlans(user.getUid());
+            }
+        });
     }
 
     private void setupObservers() {
@@ -45,6 +74,21 @@ public class HomeFragment extends Fragment {
             if (user != null) {
                 currentUser = user;
                 updateUIBasedOnRole();
+                if (welcomeText != null) {
+                    welcomeText.setText("Welcome, " + user.getUsername() + "!");
+                }
+            }
+        });
+        
+        scheduleViewModel.getSchedules().observe(getViewLifecycleOwner(), schedules -> {
+            if (schedules != null && statsSchedules != null) {
+                statsSchedules.setText(String.valueOf(schedules.size()));
+            }
+        });
+        
+        planViewModel.getPlans().observe(getViewLifecycleOwner(), plans -> {
+            if (plans != null && statsPlans != null) {
+                statsPlans.setText(String.valueOf(plans.size()));
             }
         });
     }

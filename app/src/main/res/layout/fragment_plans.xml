@@ -23,6 +23,18 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="16dp" />
 
+            <TextView
+                android:id="@+id/text_empty_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No saved plans yet.\nTap + to create your first journey!"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="20dp" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/plans_recycler_view"
                 android:layout_width="match_parent"

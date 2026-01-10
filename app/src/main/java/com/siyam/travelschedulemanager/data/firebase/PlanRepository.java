@@ -55,11 +55,12 @@ public class PlanRepository {
 
     /**
      * Get all plans for a user
+     * Note: Removed orderBy to avoid composite index requirement
+     * Sorting will be done in code
      */
     public Task<QuerySnapshot> getUserPlans(String userId) {
         return db.collection(Constants.COLLECTION_PLANS)
                 .whereEqualTo("userId", userId)
-                .orderBy("createdDate", Query.Direction.DESCENDING)
                 .get();
     }
 

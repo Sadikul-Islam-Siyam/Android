@@ -44,7 +44,10 @@ public class AdminViewModel extends ViewModel {
                     List<User> userList = new ArrayList<>();
                     for (QueryDocumentSnapshot document : querySnapshot) {
                         User user = document.toObject(User.class);
-                        userList.add(user);
+                        // Client-side filtering for PENDING status
+                        if ("PENDING".equals(user.getStatus())) {
+                            userList.add(user);
+                        }
                     }
                     pendingUsers.setValue(userList);
                 })
@@ -60,6 +63,24 @@ public class AdminViewModel extends ViewModel {
                     for (QueryDocumentSnapshot document : querySnapshot) {
                         User user = document.toObject(User.class);
                         userList.add(user);
+                    }
+                    allUsers.setValue(userList);
+                })
+                .addOnFailureListener(e -> {
+                    error.setValue("Failed to load users: " + e.getMessage());
+                });
+    }
+
+    public void loadApprovedUsers() {
+        userRepository.getApprovedUsers()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<User> userList = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : querySnapshot) {
+                        User user = document.toObject(User.class);
+                        // Client-side filtering for APPROVED status only
+                        if ("APPROVED".equals(user.getStatus())) {
+                            userList.add(user);
+                        }
                     }
                     allUsers.setValue(userList);
                 })
@@ -122,4 +143,14 @@ public class AdminViewModel extends ViewModel {
                     error.setValue("Failed to unlock user: " + e.getMessage());
                 });
     }
-}
+
+    public void changeUserRole(String uid, String newRole) {
+        userRepository.updateUserRole(uid, newRole)
+                .addOnSuccessListener(aVoid -> {
+                    message.setValue("User role updated to " + newRole);
+                    loadAllUsers();
+                })
+                .addOnFailureListener(e -> {
+                    error.setValue("Failed to change role: " + e.getMessage());
+                });
+    }}

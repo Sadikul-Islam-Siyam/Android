@@ -33,7 +33,19 @@ public class MasterDashboardActivity extends AppCompatActivity {
         Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.master_nav_host_fragment);
         if (navHostFragment != null) {
             navController = ((NavHostFragment) navHostFragment).getNavController();
+            
+            // Enable back button
+            navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(destination.getId() != R.id.masterHomeFragment);
+                }
+            });
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        return navController != null && navController.navigateUp() || super.onSupportNavigateUp();
     }
 
     @Override

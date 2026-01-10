@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -14,15 +16,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.siyam.travelschedulemanager.R;
+import com.siyam.travelschedulemanager.util.Constants;
 import com.siyam.travelschedulemanager.util.ValidationUtils;
 import com.siyam.travelschedulemanager.viewmodel.AuthViewModel;
 
 public class RegisterActivity extends AppCompatActivity {
     private EditText usernameInput, emailInput, passwordInput, confirmPasswordInput;
+    private AutoCompleteTextView roleSpinner;
     private Button registerButton;
     private TextView loginLink;
     private ProgressBar progressBar;
     private AuthViewModel authViewModel;
+    private String selectedRole = Constants.ROLE_USER;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +44,21 @@ public class RegisterActivity extends AppCompatActivity {
     private void initViews() {
         usernameInput = findViewById(R.id.username_input);
         emailInput = findViewById(R.id.email_input);
+        roleSpinner = findViewById(R.id.role_spinner);
         passwordInput = findViewById(R.id.password_input);
         confirmPasswordInput = findViewById(R.id.confirm_password_input);
         registerButton = findViewById(R.id.register_button);
         loginLink = findViewById(R.id.login_link);
         progressBar = findViewById(R.id.progress_bar);
+        
+        // Setup role spinner
+        String[] roles = {"User", "Developer"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, roles);
+        roleSpinner.setAdapter(adapter);
+        roleSpinner.setText("User", false);
+        roleSpinner.setOnItemClickListener((parent, view, position, id) -> {
+            selectedRole = position == 0 ? Constants.ROLE_USER : Constants.ROLE_DEVELOPER;
+        });
     }
 
     private void setupObservers() {
@@ -100,6 +115,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         progressBar.setVisibility(View.VISIBLE);
-        authViewModel.register(username, email, password);
+        authViewModel.registerWithRole(username, email, password, selectedRole);
     }
 }

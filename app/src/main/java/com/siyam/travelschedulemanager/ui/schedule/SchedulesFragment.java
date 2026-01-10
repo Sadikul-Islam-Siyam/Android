@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,7 +44,7 @@ public class SchedulesFragment extends Fragment {
         FloatingActionButton fab = view.findViewById(R.id.fab_add_schedule);
         if (fab != null) {
             fab.setOnClickListener(v -> {
-                Toast.makeText(requireContext(), "Add Schedule - Coming soon", Toast.LENGTH_SHORT).show();
+                Navigation.findNavController(view).navigate(R.id.action_editApi_to_addSchedule);
             });
         }
     }

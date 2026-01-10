@@ -33,7 +33,19 @@ public class DeveloperDashboardActivity extends AppCompatActivity {
         Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.developer_nav_host_fragment);
         if (navHostFragment != null) {
             navController = ((NavHostFragment) navHostFragment).getNavController();
+            
+            // Enable back button
+            navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(destination.getId() != R.id.developerHomeFragment);
+                }
+            });
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        return navController != null && navController.navigateUp() || super.onSupportNavigateUp();
     }
 
     @Override

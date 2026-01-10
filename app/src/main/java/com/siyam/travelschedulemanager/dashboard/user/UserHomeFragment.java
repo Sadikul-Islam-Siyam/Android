@@ -42,8 +42,7 @@ public class UserHomeFragment extends Fragment {
         NavController navController = Navigation.findNavController(view);
 
         cardCreatePlan.setOnClickListener(v -> {
-            // Navigate to create plan (will implement later)
-            // navController.navigate(R.id.action_userHome_to_createPlan);
+            navController.navigate(R.id.action_userHome_to_createPlan);
         });
 
         cardSavedPlans.setOnClickListener(v -> {

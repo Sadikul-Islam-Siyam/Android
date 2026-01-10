@@ -104,7 +104,6 @@ public class RouteRepository {
      */
     public Task<QuerySnapshot> getAllPendingRoutes() {
         return db.collection(Constants.COLLECTION_PENDING_ROUTES)
-                .whereEqualTo("status", Constants.REQUEST_PENDING)
                 .orderBy("submittedAt", Query.Direction.DESCENDING)
                 .get();
     }

@@ -113,10 +113,11 @@ public class UserRepository {
 
     /**
      * Get all pending users
+     * Note: Removed whereEqualTo to avoid Firebase composite index requirement
+     * Filtering by status should be done in code
      */
     public Task<QuerySnapshot> getPendingUsers() {
         return db.collection(Constants.COLLECTION_USERS)
-                .whereEqualTo("status", Constants.STATUS_PENDING)
                 .orderBy("createdAt", Query.Direction.DESCENDING)
                 .get();
     }
@@ -125,6 +126,17 @@ public class UserRepository {
      * Get all users
      */
     public Task<QuerySnapshot> getAllUsers() {
+        return db.collection(Constants.COLLECTION_USERS)
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .get();
+    }
+
+    /**
+     * Get all approved users (for role management)
+     * Note: Removed whereEqualTo to avoid Firebase composite index requirement
+     * Filtering by status should be done in code
+     */
+    public Task<QuerySnapshot> getApprovedUsers() {
         return db.collection(Constants.COLLECTION_USERS)
                 .orderBy("createdAt", Query.Direction.DESCENDING)
                 .get();

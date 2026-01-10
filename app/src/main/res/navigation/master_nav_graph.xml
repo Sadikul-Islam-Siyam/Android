@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/master_nav_graph"
+    app:startDestination="@id/masterHomeFragment">
+
+    <fragment
+        android:id="@+id/masterHomeFragment"
+        android:name="com.siyam.travelschedulemanager.dashboard.master.MasterHomeFragment"
+        android:label="Master Control">
+        <action
+            android:id="@+id/action_masterHome_to_editApi"
+            app:destination="@id/editApiFragment" />
+        <action
+            android:id="@+id/action_masterHome_to_approveApiChanges"
+            app:destination="@id/approveApiChangesFragment" />
+        <action
+            android:id="@+id/action_masterHome_to_approveAccounts"
+            app:destination="@id/approveAccountsFragment" />
+        <action
+            android:id="@+id/action_masterHome_to_changeRoles"
+            app:destination="@id/changeRolesFragment" />
+        <action
+            android:id="@+id/action_masterHome_to_lockUsers"
+            app:destination="@id/lockUsersFragment" />
+        <action
+            android:id="@+id/action_masterHome_to_fullHistory"
+            app:destination="@id/fullHistoryFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editApiFragment"
+        android:name="com.siyam.travelschedulemanager.ui.schedule.SchedulesFragment"
+        android:label="Edit API Data" />
+
+    <fragment
+        android:id="@+id/approveApiChangesFragment"
+        android:name="com.siyam.travelschedulemanager.ui.approval.ApproveApiChangesFragment"
+        android:label="Approve API Changes" />
+
+    <fragment
+        android:id="@+id/approveAccountsFragment"
+        android:name="com.siyam.travelschedulemanager.ui.approval.ApproveAccountsFragment"
+        android:label="Approve Accounts" />
+
+    <fragment
+        android:id="@+id/changeRolesFragment"
+        android:name="com.siyam.travelschedulemanager.ui.admin.ChangeRolesFragment"
+        android:label="Change Roles" />
+
+    <fragment
+        android:id="@+id/lockUsersFragment"
+        android:name="com.siyam.travelschedulemanager.ui.admin.LockUsersFragment"
+        android:label="Lock Users" />
+
+    <fragment
+        android:id="@+id/fullHistoryFragment"
+        android:name="com.siyam.travelschedulemanager.ui.history.FullHistoryFragment"
+        android:label="Full History" />
+
+</navigation>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/user_nav_graph"
+    app:startDestination="@id/userHomeFragment">
+
+    <fragment
+        android:id="@+id/userHomeFragment"
+        android:name="com.siyam.travelschedulemanager.dashboard.user.UserHomeFragment"
+        android:label="Home">
+        <action
+            android:id="@+id/action_userHome_to_savedPlans"
+            app:destination="@id/savedPlansFragment" />
+        <action
+            android:id="@+id/action_userHome_to_routeFinder"
+            app:destination="@id/routeFinderFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/savedPlansFragment"
+        android:name="com.siyam.travelschedulemanager.ui.plan.PlansFragment"
+        android:label="Saved Plans" />
+
+    <fragment
+        android:id="@+id/routeFinderFragment"
+        android:name="com.siyam.travelschedulemanager.ui.route.RouteFinderFragment"
+        android:label="Route Finder" />
+
+</navigation>

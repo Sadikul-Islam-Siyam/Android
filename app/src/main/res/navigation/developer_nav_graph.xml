@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/developer_nav_graph"
+    app:startDestination="@id/developerHomeFragment">
+
+    <fragment
+        android:id="@+id/developerHomeFragment"
+        android:name="com.siyam.travelschedulemanager.dashboard.developer.DeveloperHomeFragment"
+        android:label="Developer Panel">
+        <action
+            android:id="@+id/action_developerHome_to_savedPlans"
+            app:destination="@id/savedPlansFragment" />
+        <action
+            android:id="@+id/action_developerHome_to_routeFinder"
+            app:destination="@id/routeFinderFragment" />
+        <action
+            android:id="@+id/action_developerHome_to_editApi"
+            app:destination="@id/editApiFragment" />
+        <action
+            android:id="@+id/action_developerHome_to_approveUsers"
+            app:destination="@id/approveUsersFragment" />
+        <action
+            android:id="@+id/action_developerHome_to_editHistory"
+            app:destination="@id/editHistoryFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/savedPlansFragment"
+        android:name="com.siyam.travelschedulemanager.ui.plan.PlansFragment"
+        android:label="Saved Plans" />
+
+    <fragment
+        android:id="@+id/routeFinderFragment"
+        android:name="com.siyam.travelschedulemanager.ui.route.RouteFinderFragment"
+        android:label="Route Finder" />
+
+    <fragment
+        android:id="@+id/editApiFragment"
+        android:name="com.siyam.travelschedulemanager.ui.schedule.SchedulesFragment"
+        android:label="Edit API Data" />
+
+    <fragment
+        android:id="@+id/approveUsersFragment"
+        android:name="com.siyam.travelschedulemanager.ui.approval.ApproveUsersFragment"
+        android:label="Approve Users" />
+
+    <fragment
+        android:id="@+id/editHistoryFragment"
+        android:name="com.siyam.travelschedulemanager.ui.history.EditHistoryFragment"
+        android:label="Edit History" />
+
+</navigation>

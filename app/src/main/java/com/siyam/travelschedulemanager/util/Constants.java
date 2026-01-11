@@ -5,49 +5,52 @@ import java.util.List;
 
 public class Constants {
 
-    // User Roles
+    // User Roles (USER for regular users, MASTER for admin)
     public static final String ROLE_USER = "USER";
-    public static final String ROLE_DEVELOPER = "DEVELOPER";
     public static final String ROLE_MASTER = "MASTER";
+    
+    // Deprecated role - removed from system
+    @Deprecated public static final String ROLE_DEVELOPER = "DEVELOPER";
 
-    // Account Status
-    public static final String STATUS_PENDING = "PENDING";
+    // Account Status (simplified - all approved users)
     public static final String STATUS_APPROVED = "APPROVED";
-    public static final String STATUS_REJECTED = "REJECTED";
     public static final String STATUS_LOCKED = "LOCKED";
-
+    
+    // Deprecated status - kept for backward compatibility
+    @Deprecated public static final String STATUS_PENDING = "PENDING";
+    @Deprecated public static final String STATUS_REJECTED = "REJECTED";
+    
     // Transport Types
     public static final String TRANSPORT_BUS = "BUS";
     public static final String TRANSPORT_TRAIN = "TRAIN";
 
-    // Request Status
-    public static final String REQUEST_PENDING = "PENDING";
-    public static final String REQUEST_APPROVED = "APPROVED";
-    public static final String REQUEST_REJECTED = "REJECTED";
 
-    // Change Types
-    public static final String CHANGE_ADD = "ADD";
-    public static final String CHANGE_EDIT = "EDIT";
-    public static final String CHANGE_DELETE = "DELETE";
 
-    // Firestore Collections
+    // Firestore Collections (simplified - only user data in Firebase)
     public static final String COLLECTION_USERS = "users";
     public static final String COLLECTION_PLANS = "plans";
-    public static final String COLLECTION_SCHEDULES = "schedules";
-    public static final String COLLECTION_ROUTES = "routes";
-    public static final String COLLECTION_PENDING_ROUTES = "pendingRoutes";    public static final String COLLECTION_AUDIT_LOGS = "audit_logs";
+    public static final String COLLECTION_AUDIT_LOGS = "audit_logs";
     
-    // Audit Actions
-    public static final String ACTION_CREATE = "CREATE";
-    public static final String ACTION_UPDATE = "UPDATE";
-    public static final String ACTION_DELETE = "DELETE";
-    public static final String ACTION_APPROVE = "APPROVE";
-    public static final String ACTION_REJECT = "REJECT";
+    // Deprecated collections - kept for backward compatibility (schedules from REST API now)
+    @Deprecated public static final String COLLECTION_SCHEDULES = "schedules";
+    @Deprecated public static final String COLLECTION_ROUTES = "routes";
+    @Deprecated public static final String COLLECTION_PENDING_ROUTES = "pending_routes";
+    
+    // Deprecated request status - kept for backward compatibility
+    @Deprecated public static final String REQUEST_PENDING = "PENDING";
+    @Deprecated public static final String REQUEST_APPROVED = "APPROVED";
+    @Deprecated public static final String REQUEST_REJECTED = "REJECTED";
+    
+    // Audit Actions (simplified)
     public static final String ACTION_LOGIN = "LOGIN";
     public static final String ACTION_LOGOUT = "LOGOUT";
-    public static final String ACTION_LOCK = "LOCK";
-    public static final String ACTION_UNLOCK = "UNLOCK";
-    public static final String ACTION_ROLE_CHANGE = "ROLE_CHANGE";
+    
+    // Deprecated actions - kept for backward compatibility
+    @Deprecated public static final String ACTION_CREATE = "CREATE";
+    @Deprecated public static final String ACTION_UPDATE = "UPDATE";
+    @Deprecated public static final String ACTION_DELETE = "DELETE";
+    @Deprecated public static final String ACTION_APPROVE = "APPROVE";
+    @Deprecated public static final String ACTION_REJECT = "REJECT";
     // Preferences Keys
     public static final String PREF_THEME = "theme";
     public static final String PREF_LANGUAGE = "language";

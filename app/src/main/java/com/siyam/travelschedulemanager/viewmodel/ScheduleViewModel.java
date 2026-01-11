@@ -1,129 +1,200 @@
 package com.siyam.travelschedulemanager.viewmodel;
 
+import android.app.Application;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.siyam.travelschedulemanager.data.firebase.ScheduleRepository;
-import com.siyam.travelschedulemanager.model.Schedule;
-import com.siyam.travelschedulemanager.util.RouteAlgorithm;
+import com.siyam.travelschedulemanager.data.remote.dto.BusScheduleDTO;
+import com.siyam.travelschedulemanager.data.remote.dto.TrainScheduleDTO;
+import com.siyam.travelschedulemanager.data.remote.dto.UnifiedScheduleDTO;
+import com.siyam.travelschedulemanager.data.repository.ScheduleRepository;
+import com.siyam.travelschedulemanager.data.repository.ScheduleRepository.Resource;
+import com.siyam.travelschedulemanager.util.NetworkManager;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-public class ScheduleViewModel extends ViewModel {
+/**
+ * ViewModel for schedule data - integrates with REST API
+ * Online: Fetches from server and caches
+ * Offline: Uses cached data
+ */
+public class ScheduleViewModel extends AndroidViewModel {
     private final ScheduleRepository scheduleRepository;
-    private final MutableLiveData<List<Schedule>> schedules = new MutableLiveData<>();
-    private final MutableLiveData<List<Schedule>> searchResults = new MutableLiveData<>();
-    private final MutableLiveData<List<RouteAlgorithm.RouteResult>> routeResults = new MutableLiveData<>();
+    private final NetworkManager networkManager;
+    
+    private final MediatorLiveData<Resource<List<BusScheduleDTO>>> busSchedules = new MediatorLiveData<>();
+    private final MediatorLiveData<Resource<List<TrainScheduleDTO>>> trainSchedules = new MediatorLiveData<>();
+    private final MediatorLiveData<Resource<List<UnifiedScheduleDTO>>> searchResults = new MediatorLiveData<>();
+    private final MutableLiveData<Boolean> isServerReachable = new MutableLiveData<>();
     private final MutableLiveData<String> message = new MutableLiveData<>();
-    private final MutableLiveData<String> error = new MutableLiveData<>();
 
-    public ScheduleViewModel() {
-        this.scheduleRepository = new ScheduleRepository();
+    public ScheduleViewModel(Application application) {
+        super(application);
+        this.scheduleRepository = ScheduleRepository.getInstance(application);
+        this.networkManager = NetworkManager.getInstance(application);
     }
 
-    public LiveData<List<Schedule>> getSchedules() {
-        return schedules;
+    // Getters for LiveData
+    public LiveData<Resource<List<BusScheduleDTO>>> getBusSchedules() {
+        return busSchedules;
     }
 
-    public LiveData<List<Schedule>> getSearchResults() {
+    public LiveData<Resource<List<TrainScheduleDTO>>> getTrainSchedules() {
+        return trainSchedules;
+    }
+
+    public LiveData<Resource<List<UnifiedScheduleDTO>>> getSearchResults() {
         return searchResults;
     }
 
-    public LiveData<List<RouteAlgorithm.RouteResult>> getRouteResults() {
-        return routeResults;
+    public LiveData<Boolean> getIsServerReachable() {
+        return isServerReachable;
+    }
+
+    public LiveData<Boolean> isOnline() {
+        return networkManager.getIsOnlineLiveData();
+    }
+
+    public LiveData<NetworkManager.NetworkStatus> getNetworkStatus() {
+        return networkManager.getNetworkStatusLiveData();
     }
 
     public LiveData<String> getMessage() {
         return message;
     }
-
+    
+    /**
+     * Deprecated - for backward compatibility with old UI
+     */
+    @Deprecated
     public LiveData<String> getError() {
-        return error;
+        return message; // Same as message
     }
-
+    
+    /**
+     * Deprecated - for backward compatibility, returns empty list
+     * Old UI should be updated to use getBusSchedules() or getTrainSchedules()
+     */
+    @Deprecated
+    public LiveData<List<com.siyam.travelschedulemanager.model.Schedule>> getSchedules() {
+        MutableLiveData<List<com.siyam.travelschedulemanager.model.Schedule>> emptyList = new MutableLiveData<>();
+        emptyList.setValue(new ArrayList<>());
+        return emptyList;
+    }
+    
+    /**
+     * Deprecated - for backward compatibility
+     * Schedules now come from REST API, use loadBusSchedules() or loadTrainSchedules()
+     */
+    @Deprecated
     public void loadAllSchedules() {
-        scheduleRepository.getAllSchedules()
-                .addOnSuccessListener(querySnapshot -> {
-                    List<Schedule> scheduleList = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : querySnapshot) {
-                        Schedule schedule = document.toObject(Schedule.class);
-                        scheduleList.add(schedule);
-                    }
-                    schedules.setValue(scheduleList);
-                })
-                .addOnFailureListener(e -> {
-                    error.setValue("Failed to load schedules: " + e.getMessage());
-                });
+        loadBusSchedules();
+        loadTrainSchedules();
+    }
+    
+    /**
+     * Deprecated - no longer supported, schedules are read-only from REST API
+     */
+    @Deprecated
+    public void createSchedule(com.siyam.travelschedulemanager.model.Schedule schedule) {
+        message.setValue("Schedule management has been moved to desktop app");
+    }
+    
+    /**
+     * Deprecated - no longer supported
+     */
+    @Deprecated
+    public void findOptimalRoutes(String origin, String destination, java.util.Date travelDate, int maxLegs) {
+        message.setValue("Use searchRoutes() instead");
+        searchRoutes(origin, destination);
     }
 
-    public void searchSchedules(String origin, String destination, String transportType) {
-        scheduleRepository.searchSchedules(origin, destination, transportType)
-                .addOnSuccessListener(querySnapshot -> {
-                    List<Schedule> scheduleList = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : querySnapshot) {
-                        Schedule schedule = document.toObject(Schedule.class);
-                        scheduleList.add(schedule);
-                    }
-                    searchResults.setValue(scheduleList);
-                })
-                .addOnFailureListener(e -> {
-                    error.setValue("Failed to search schedules: " + e.getMessage());
-                });
+    /**
+     * Load all bus schedules
+     * Online: Fetches from API and caches
+     * Offline: Returns cached data
+     */
+    public void loadBusSchedules() {
+        LiveData<Resource<List<BusScheduleDTO>>> source = scheduleRepository.getAllBusSchedules();
+        busSchedules.addSource(source, resource -> {
+            busSchedules.setValue(resource);
+            if (resource != null && resource.getStatus() == Resource.Status.SUCCESS) {
+                message.setValue(resource.isFromCache() ? 
+                    "Loaded from cache (offline)" : "Loaded from server");
+            }
+        });
     }
 
-    public void createSchedule(Schedule schedule) {
-        scheduleRepository.createSchedule(schedule)
-                .addOnSuccessListener(aVoid -> {
-                    message.setValue("Schedule created successfully");
-                    loadAllSchedules();
-                })
-                .addOnFailureListener(e -> {
-                    error.setValue("Failed to create schedule: " + e.getMessage());
-                });
+    /**
+     * Load all train schedules
+     * Online: Fetches from API and caches
+     * Offline: Returns cached data
+     */
+    public void loadTrainSchedules() {
+        LiveData<Resource<List<TrainScheduleDTO>>> source = scheduleRepository.getAllTrainSchedules();
+        trainSchedules.addSource(source, resource -> {
+            trainSchedules.setValue(resource);
+            if (resource != null && resource.getStatus() == Resource.Status.SUCCESS) {
+                message.setValue(resource.isFromCache() ? 
+                    "Loaded from cache (offline)" : "Loaded from server");
+            }
+        });
     }
 
-    public void updateSchedule(String scheduleId, Schedule schedule) {
-        scheduleRepository.updateSchedule(scheduleId, schedule)
-                .addOnSuccessListener(aVoid -> {
-                    message.setValue("Schedule updated successfully");
-                    loadAllSchedules();
-                })
-                .addOnFailureListener(e -> {
-                    error.setValue("Failed to update schedule: " + e.getMessage());
-                });
+    /**
+     * Search for routes between origin and destination
+     * Requires online connection
+     */
+    public void searchRoutes(String start, String destination) {
+        Boolean online = networkManager.isOnline();
+        if (online == null || !online) {
+            searchResults.setValue(Resource.error("Route search requires internet connection", null));
+            return;
+        }
+
+        LiveData<Resource<List<UnifiedScheduleDTO>>> source = scheduleRepository.searchRoutes(start, destination);
+        searchResults.addSource(source, resource -> {
+            searchResults.setValue(resource);
+            if (resource != null && resource.getStatus() == Resource.Status.SUCCESS && resource.getData() != null) {
+                message.setValue("Found " + resource.getData().size() + " routes");
+            }
+        });
     }
 
-    public void deleteSchedule(String scheduleId) {
-        scheduleRepository.deleteSchedule(scheduleId)
-                .addOnSuccessListener(aVoid -> {
-                    message.setValue("Schedule deleted successfully");
-                    loadAllSchedules();
-                })
-                .addOnFailureListener(e -> {
-                    error.setValue("Failed to delete schedule: " + e.getMessage());
-                });
+    /**
+     * Check if the REST API server is reachable
+     */
+    public void checkServerHealth() {
+        LiveData<Resource<Boolean>> source = scheduleRepository.checkServerHealth();
+        source.observeForever(resource -> {
+            if (resource != null && resource.getStatus() == Resource.Status.SUCCESS) {
+                Boolean healthy = resource.getData();
+                isServerReachable.setValue(healthy != null && healthy);
+                message.setValue((healthy != null && healthy) ? "Server is reachable" : "Server is not responding");
+            } else if (resource != null && resource.getStatus() == Resource.Status.ERROR) {
+                isServerReachable.setValue(false);
+                message.setValue("Server check failed: " + resource.getMessage());
+            }
+        });
     }
 
-    public void findOptimalRoutes(String origin, String destination, Date travelDate, int maxLegs) {
-        scheduleRepository.getAllSchedules()
-                .addOnSuccessListener(querySnapshot -> {
-                    List<Schedule> allSchedules = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : querySnapshot) {
-                        Schedule schedule = document.toObject(Schedule.class);
-                        allSchedules.add(schedule);
-                    }
+    /**
+     * Refresh all cached data (when back online)
+     */
+    public void refreshAllData() {
+        loadBusSchedules();
+        loadTrainSchedules();
+        checkServerHealth();
+    }
 
-                    List<RouteAlgorithm.RouteResult> results = RouteAlgorithm.findOptimalRoutes(
-                            origin, destination, travelDate, allSchedules, maxLegs
-                    );
-                    routeResults.setValue(results);
-                })
-                .addOnFailureListener(e -> {
-                    error.setValue("Failed to find routes: " + e.getMessage());
-                });
+    /**
+     * Clear all cached schedule data
+     */
+    public void clearCache() {
+        scheduleRepository.clearCache();
+        message.setValue("Cache cleared");
     }
 }

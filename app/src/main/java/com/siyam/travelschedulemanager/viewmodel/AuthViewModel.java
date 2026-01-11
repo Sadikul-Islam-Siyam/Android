@@ -41,41 +41,29 @@ public class AuthViewModel extends ViewModel {
     }
 
     /**
-     * Register new user with default USER role
+     * Register new user - all users are auto-approved with USER role
      */
     public void register(String username, String email, String password) {
         registerWithRole(username, email, password, Constants.ROLE_USER);
     }
     
     /**
-     * Register new user with specified role
+     * Register new user with specified role (deprecated - all users get USER role now)
+     * Kept for backward compatibility with existing UI
      */
+    @Deprecated
     public void registerWithRole(String username, String email, String password, String role) {
         authRepository.register(email, password)
                 .addOnSuccessListener(result -> {
                     String uid = result.getUser().getUid();
                     
-                    // Auto-approve master@travel.com as MASTER role
-                    final String finalRole;
-                    final String status;
-                    final String successMessage;
-                    
-                    if (email.equalsIgnoreCase("master@travel.com")) {
-                        finalRole = Constants.ROLE_MASTER;
-                        status = Constants.STATUS_APPROVED;
-                        successMessage = "Registration successful. You can now login.";
-                    } else {
-                        finalRole = role;
-                        status = Constants.STATUS_PENDING;
-                        successMessage = "Registration successful. Awaiting approval.";
-                    }
-                    
-                    User user = new User(uid, username, email, finalRole, status);
+                    // All users are auto-approved with USER role
+                    User user = new User(uid, username, email, Constants.ROLE_USER, Constants.STATUS_APPROVED);
                     
                     userRepository.createUser(user)
                             .addOnSuccessListener(aVoid -> {
                                 currentUser.setValue(user);
-                                authResult.setValue(new AuthResult(true, successMessage));
+                                authResult.setValue(new AuthResult(true, "Registration successful. You can now use the app."));
                             })
                             .addOnFailureListener(e -> {
                                 error.setValue("Failed to create user profile: " + e.getMessage());
@@ -87,32 +75,9 @@ public class AuthViewModel extends ViewModel {
     }
 
     /**
-     * Sign in user
+     * Sign in user - simplified flow without special master handling
      */
     public void signIn(String email, String password) {
-        // Special handling for master account
-        if (email.equalsIgnoreCase("master@travel.com") && password.equals("master123")) {
-            // Try to login with Firebase first
-            authRepository.signIn(email, password)
-                    .addOnSuccessListener(result -> {
-                        String uid = result.getUser().getUid();
-                        ensureMasterAccountExists(uid, email);
-                    })
-                    .addOnFailureListener(e -> {
-                        // If login fails, try to register the master account
-                        authRepository.register(email, password)
-                                .addOnSuccessListener(result -> {
-                                    String uid = result.getUser().getUid();
-                                    ensureMasterAccountExists(uid, email);
-                                })
-                                .addOnFailureListener(registerError -> {
-                                    error.setValue("Failed to create master account: " + registerError.getMessage());
-                                });
-                    });
-            return;
-        }
-        
-        // Normal login flow for other users
         authRepository.signIn(email, password)
                 .addOnSuccessListener(result -> {
                     String uid = result.getUser().getUid();
@@ -121,19 +86,7 @@ public class AuthViewModel extends ViewModel {
                             .addOnSuccessListener(documentSnapshot -> {
                                 User user = documentSnapshot.toObject(User.class);
                                 if (user != null) {
-                                    // Check account status
-                                    if (user.getStatus().equals(Constants.STATUS_PENDING)) {
-                                        authRepository.signOut();
-                                        error.setValue("Your account is pending approval.");
-                                        return;
-                                    }
-                                    
-                                    if (user.getStatus().equals(Constants.STATUS_REJECTED)) {
-                                        authRepository.signOut();
-                                        error.setValue("Your account was rejected: " + user.getRejectionReason());
-                                        return;
-                                    }
-                                    
+                                    // Check if account is locked
                                     if (user.getStatus().equals(Constants.STATUS_LOCKED)) {
                                         Timestamp lockUntil = user.getLockUntil();
                                         if (lockUntil != null && lockUntil.toDate().after(new Date())) {
@@ -187,67 +140,7 @@ public class AuthViewModel extends ViewModel {
                     error.setValue("Login failed: " + e.getMessage());
                 });
     }
-    
-    /**
-     * Ensure master account exists in Firestore
-     */
-    private void ensureMasterAccountExists(String uid, String email) {
-        userRepository.getUser(uid)
-                .addOnSuccessListener(documentSnapshot -> {
-                    User user = documentSnapshot.toObject(User.class);
-                    if (user == null) {
-                        // Create master account in Firestore
-                        User masterUser = new User(uid, "Master Admin", email,
-                                Constants.ROLE_MASTER, Constants.STATUS_APPROVED);
-                        userRepository.createUser(masterUser)
-                                .addOnSuccessListener(aVoid -> {
-                                    // Create audit log for master account creation
-                                    auditLogRepository.createAuditLog(
-                                        masterUser.getUid(),
-                                        masterUser.getUsername(),
-                                        masterUser.getRole(),
-                                        Constants.ACTION_LOGIN,
-                                        "user",
-                                        masterUser.getUid(),
-                                        "Master account created and logged in"
-                                    );
-                                    
-                                    currentUser.setValue(masterUser);
-                                    authResult.setValue(new AuthResult(true, "Master account created and logged in"));
-                                })
-                                .addOnFailureListener(e -> {
-                                    error.setValue("Failed to create master profile: " + e.getMessage());
-                                });
-                    } else {
-                        // Update to ensure MASTER role and APPROVED status
-                        user.setRole(Constants.ROLE_MASTER);
-                        user.setStatus(Constants.STATUS_APPROVED);
-                        userRepository.updateUser(uid, user)
-                                .addOnSuccessListener(aVoid -> {
-                                    // Create audit log for master login
-                                    auditLogRepository.createAuditLog(
-                                        user.getUid(),
-                                        user.getUsername(),
-                                        user.getRole(),
-                                        Constants.ACTION_LOGIN,
-                                        "user",
-                                        user.getUid(),
-                                        "Master login successful"
-                                    );
-                                    
-                                    currentUser.setValue(user);
-                                    authResult.setValue(new AuthResult(true, "Login successful"));
-                                })
-                                .addOnFailureListener(e -> {
-                                    currentUser.setValue(user);
-                                    authResult.setValue(new AuthResult(true, "Login successful"));
-                                });
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    error.setValue("Failed to verify master account: " + e.getMessage());
-                });
-    }
+
 
     /**
      * Sign out

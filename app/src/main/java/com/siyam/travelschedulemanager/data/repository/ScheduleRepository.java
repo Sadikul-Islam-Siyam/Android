@@ -165,11 +165,11 @@ public class ScheduleRepository {
         if (networkManager.isOnline()) {
             result.setValue(Resource.loading(null));
             
-            apiService.getAllSchedules().enqueue(new Callback<ApiResponseWrapper<UnifiedScheduleDTO>>() {
+            apiService.getAllSchedules().enqueue(new Callback<List<UnifiedScheduleDTO>>() {
                 @Override
-                public void onResponse(Call<ApiResponseWrapper<UnifiedScheduleDTO>> call, Response<ApiResponseWrapper<UnifiedScheduleDTO>> response) {
-                    if (response.isSuccessful() && response.body() != null && response.body().getValue() != null) {
-                        List<UnifiedScheduleDTO> schedules = response.body().getValue();
+                public void onResponse(Call<List<UnifiedScheduleDTO>> call, Response<List<UnifiedScheduleDTO>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        List<UnifiedScheduleDTO> schedules = response.body();
                         cacheManager.cacheUnifiedSchedules(schedules);
                         result.setValue(Resource.success(schedules, false));
                         Log.d(TAG, "Fetched " + schedules.size() + " unified schedules from API");
@@ -180,7 +180,7 @@ public class ScheduleRepository {
                 }
 
                 @Override
-                public void onFailure(Call<ApiResponseWrapper<UnifiedScheduleDTO>> call, Throwable t) {
+                public void onFailure(Call<List<UnifiedScheduleDTO>> call, Throwable t) {
                     Log.e(TAG, "API call failed", t);
                     List<UnifiedScheduleDTO> cached = cacheManager.getCachedUnifiedSchedules();
                     if (!cached.isEmpty()) {
@@ -218,20 +218,20 @@ public class ScheduleRepository {
         
         result.setValue(Resource.loading(null));
         
-        apiService.searchRoutes(start, destination).enqueue(new Callback<ApiResponseWrapper<UnifiedScheduleDTO>>() {
+        apiService.searchRoutes(start, destination).enqueue(new Callback<List<UnifiedScheduleDTO>>() {
             @Override
-            public void onResponse(Call<ApiResponseWrapper<UnifiedScheduleDTO>> call, Response<ApiResponseWrapper<UnifiedScheduleDTO>> response) {
+            public void onResponse(Call<List<UnifiedScheduleDTO>> call, Response<List<UnifiedScheduleDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<UnifiedScheduleDTO> routes = response.body().getValue();
+                    List<UnifiedScheduleDTO> routes = response.body();
                     result.setValue(Resource.success(routes, false));
-                    Log.d(TAG, "Found " + routes.size() + " routes for " + start + " -> " + destination + " (Count: " + response.body().getCount() + ")");
+                    Log.d(TAG, "Found " + routes.size() + " routes for " + start + " -> " + destination);
                 } else {
                     result.setValue(Resource.error("No routes found or server error", new ArrayList<>()));
                 }
             }
 
             @Override
-            public void onFailure(Call<ApiResponseWrapper<UnifiedScheduleDTO>> call, Throwable t) {
+            public void onFailure(Call<List<UnifiedScheduleDTO>> call, Throwable t) {
                 Log.e(TAG, "Route search failed", t);
                 result.setValue(Resource.error("Search failed: " + t.getMessage(), null));
             }

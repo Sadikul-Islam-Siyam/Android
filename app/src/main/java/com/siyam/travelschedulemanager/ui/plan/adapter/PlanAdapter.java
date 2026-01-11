@@ -3,11 +3,13 @@ package com.siyam.travelschedulemanager.ui.plan.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.siyam.travelschedulemanager.R;
 import com.siyam.travelschedulemanager.model.Plan;
@@ -18,10 +20,12 @@ import java.util.List;
 
 public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder> {
     private List<Plan> plans = new ArrayList<>();
-    private OnPlanClickListener listener;
+    private OnPlanActionListener listener;
 
-    public interface OnPlanClickListener {
-        void onPlanClick(Plan plan);
+    public interface OnPlanActionListener {
+        void onViewPlan(Plan plan);
+        void onEditPlan(Plan plan);
+        void onDeletePlan(Plan plan);
     }
 
     public void setPlans(List<Plan> plans) {
@@ -29,7 +33,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
         notifyDataSetChanged();
     }
 
-    public void setOnPlanClickListener(OnPlanClickListener listener) {
+    public void setOnPlanActionListener(OnPlanActionListener listener) {
         this.listener = listener;
     }
 
@@ -55,6 +59,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
     class PlanViewHolder extends RecyclerView.ViewHolder {
         private final TextView planName, planDate, totalFare, totalDuration, legs;
         private final MaterialCardView cardView;
+        private final MaterialButton btnView, btnEdit, btnDelete;
 
         public PlanViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -64,6 +69,9 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
             totalFare = itemView.findViewById(R.id.total_fare);
             totalDuration = itemView.findViewById(R.id.total_duration);
             legs = itemView.findViewById(R.id.legs_count);
+            btnView = itemView.findViewById(R.id.btn_view);
+            btnEdit = itemView.findViewById(R.id.btn_edit);
+            btnDelete = itemView.findViewById(R.id.btn_delete);
         }
 
         public void bind(Plan plan) {
@@ -73,9 +81,21 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
             totalDuration.setText(DateUtils.formatDuration(plan.getTotalDuration()));
             legs.setText(String.format("%d legs", plan.getLegs() != null ? plan.getLegs().size() : 0));
 
-            cardView.setOnClickListener(v -> {
+            btnView.setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.onPlanClick(plan);
+                    listener.onViewPlan(plan);
+                }
+            });
+
+            btnEdit.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onEditPlan(plan);
+                }
+            });
+
+            btnDelete.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onDeletePlan(plan);
                 }
             });
         }

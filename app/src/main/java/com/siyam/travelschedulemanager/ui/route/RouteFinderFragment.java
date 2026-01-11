@@ -2,12 +2,14 @@ package com.siyam.travelschedulemanager.ui.route;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,25 +21,31 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.siyam.travelschedulemanager.R;
+import com.siyam.travelschedulemanager.data.remote.dto.ScheduleDTO;
 import com.siyam.travelschedulemanager.util.Constants;
-import com.siyam.travelschedulemanager.viewmodel.ScheduleViewModel;
+import com.siyam.travelschedulemanager.viewmodel.RestScheduleViewModel;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class RouteFinderFragment extends Fragment {
-    private ScheduleViewModel scheduleViewModel;
+    private RestScheduleViewModel scheduleViewModel;
     private AutoCompleteTextView editTextOrigin;
     private AutoCompleteTextView editTextDestination;
     private TextInputEditText editTextDate;
     private ChipGroup chipGroupTransport;
     private Chip chipAll, chipBus, chipTrain;
     private Button buttonFindRoutes;
+    private RecyclerView recyclerViewResults;
+    private ProgressBar progressBar;
     private Calendar selectedDate;
     private SimpleDateFormat dateFormat;
+    private RouteResultAdapter adapter;
 
     // Station suggestions for autocomplete
     private static final String[] STATION_SUGGESTIONS = {
@@ -58,7 +66,7 @@ public class RouteFinderFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        scheduleViewModel = new ViewModelProvider(this).get(ScheduleViewModel.class);
+        scheduleViewModel = new ViewModelProvider(this).get(RestScheduleViewModel.class);
         selectedDate = Calendar.getInstance();
         dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
     }
@@ -74,12 +82,12 @@ public class RouteFinderFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         initViews(view);
+        setupRecyclerView();
         setupAutoComplete();
         setupDatePicker();
         setupTransportFilter();
         setupFindButton();
-
-        scheduleViewModel.loadAllSchedules();
+        setupObservers();
     }
 
     private void initViews(View view) {
@@ -91,9 +99,62 @@ public class RouteFinderFragment extends Fragment {
         chipBus = view.findViewById(R.id.chip_bus);
         chipTrain = view.findViewById(R.id.chip_train);
         buttonFindRoutes = view.findViewById(R.id.button_find_routes);
+        recyclerViewResults = view.findViewById(R.id.recycler_view_results);
+        progressBar = view.findViewById(R.id.progress_bar);
 
         // Set default date to today
         editTextDate.setText(dateFormat.format(selectedDate.getTime()));
+    }
+
+    private void setupRecyclerView() {
+        adapter = new RouteResultAdapter(new ArrayList<>());
+        recyclerViewResults.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerViewResults.setAdapter(adapter);
+    }
+
+    private void setupObservers() {
+        scheduleViewModel.getSearchResults().observe(getViewLifecycleOwner(), schedules -> {
+            if (schedules != null) {
+                // Filter by transport type if needed
+                List<ScheduleDTO> filteredSchedules = filterByTransportType(schedules);
+                adapter.updateSchedules(filteredSchedules);
+                
+                if (filteredSchedules.isEmpty()) {
+                    Toast.makeText(requireContext(), "No routes found", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(requireContext(), 
+                            "Found " + filteredSchedules.size() + " routes", 
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        scheduleViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+            buttonFindRoutes.setEnabled(!isLoading);
+        });
+
+        scheduleViewModel.getErrorMessage().observe(getViewLifecycleOwner(), error -> {
+            if (!TextUtils.isEmpty(error)) {
+                Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private List<ScheduleDTO> filterByTransportType(List<ScheduleDTO> schedules) {
+        if (chipAll.isChecked()) {
+            return schedules;
+        }
+
+        List<ScheduleDTO> filtered = new ArrayList<>();
+        for (ScheduleDTO schedule : schedules) {
+            if (chipBus.isChecked() && "BUS".equals(schedule.getType())) {
+                filtered.add(schedule);
+            } else if (chipTrain.isChecked() && "TRAIN".equals(schedule.getType())) {
+                filtered.add(schedule);
+            }
+        }
+        return filtered;
     }
 
     private void setupAutoComplete() {
@@ -173,22 +234,7 @@ public class RouteFinderFragment extends Fragment {
             return;
         }
 
-        // Get selected transport type
-        String transportType = "ALL";
-        if (chipBus.isChecked() && !chipTrain.isChecked()) {
-            transportType = "BUS";
-        } else if (chipTrain.isChecked() && !chipBus.isChecked()) {
-            transportType = "TRAIN";
-        }
-
-        Date travelDate = selectedDate.getTime();
-        int maxLegs = 3;
-
-        // Here you would filter by transport type
-        scheduleViewModel.findOptimalRoutes(origin, destination, travelDate, maxLegs);
-        
-        Toast.makeText(requireContext(), 
-                "Finding " + transportType.toLowerCase() + " routes from " + origin + " to " + destination, 
-                Toast.LENGTH_SHORT).show();
+        // Call REST API to search routes
+        scheduleViewModel.searchRoutes(origin, destination);
     }
 }

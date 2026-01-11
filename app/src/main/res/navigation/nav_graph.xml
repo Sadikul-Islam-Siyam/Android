@@ -12,12 +12,34 @@
     <fragment
         android:id="@+id/navigation_plans"
         android:name="com.siyam.travelschedulemanager.ui.plan.PlansFragment"
-        android:label="@string/plans" />
+        android:label="@string/plans">
+        <action
+            android:id="@+id/action_plans_to_create_plan"
+            app:destination="@id/create_plan_fragment" />
+        <action
+            android:id="@+id/action_plans_to_plan_detail"
+            app:destination="@id/plan_detail_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/create_plan_fragment"
+        android:name="com.siyam.travelschedulemanager.ui.plan.CreatePlanFragment"
+        android:label="Create Plan" />
+
+    <fragment
+        android:id="@+id/plan_detail_fragment"
+        android:name="com.siyam.travelschedulemanager.ui.plan.PlanDetailFragment"
+        android:label="Plan Details" />
 
     <fragment
         android:id="@+id/navigation_schedules"
         android:name="com.siyam.travelschedulemanager.ui.schedule.SchedulesFragment"
         android:label="@string/schedules" />
+
+    <fragment
+        android:id="@+id/automatic_route_finder_fragment"
+        android:name="com.siyam.travelschedulemanager.ui.route.AutomaticRouteFinderFragment"
+        android:label="Find Routes" />
 
     <fragment
         android:id="@+id/navigation_profile"

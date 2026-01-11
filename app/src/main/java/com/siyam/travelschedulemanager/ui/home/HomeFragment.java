@@ -100,11 +100,11 @@ public class HomeFragment extends Fragment {
         });
 
         view.findViewById(R.id.card_saved_plans).setOnClickListener(v -> {
-            // Navigate to saved plans
+            Navigation.findNavController(v).navigate(R.id.navigation_plans);
         });
 
         view.findViewById(R.id.card_route_finder).setOnClickListener(v -> {
-            // Navigate to route finder
+            Navigation.findNavController(v).navigate(R.id.automatic_route_finder_fragment);
         });
 
         view.findViewById(R.id.card_logout).setOnClickListener(v -> {

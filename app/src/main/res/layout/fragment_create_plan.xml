@@ -185,6 +185,7 @@
                             android:text="Transport Type"
                             android:textSize="14sp"
                             android:textStyle="bold"
+                            android:textColor="@color/primary"
                             android:layout_marginBottom="8dp" />
 
                         <com.google.android.material.chip.ChipGroup

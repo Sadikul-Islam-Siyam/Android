@@ -26,6 +26,10 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
 import com.siyam.travelschedulemanager.R;
 import com.siyam.travelschedulemanager.data.firebase.AuthRepository;
+import com.siyam.travelschedulemanager.data.remote.ApiService;
+import com.siyam.travelschedulemanager.data.remote.RetrofitClient;
+import com.siyam.travelschedulemanager.data.remote.dto.ScheduleDTO;
+import com.siyam.travelschedulemanager.data.remote.dto.ApiResponseWrapper;
 import com.siyam.travelschedulemanager.model.Plan;
 import com.siyam.travelschedulemanager.model.Schedule;
 import com.siyam.travelschedulemanager.ui.plan.adapter.ScheduleSearchAdapter;
@@ -42,7 +46,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class CreatePlanFragment extends Fragment {
-    private ScheduleViewModel scheduleViewModel;
+    private ApiService apiService;
     private PlanViewModel planViewModel;
     private AuthRepository authRepository;
     
@@ -70,7 +74,7 @@ public class CreatePlanFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        scheduleViewModel = new ViewModelProvider(this).get(ScheduleViewModel.class);
+        apiService = RetrofitClient.getInstance(requireContext()).getApiService();
         planViewModel = new ViewModelProvider(requireActivity()).get(PlanViewModel.class);
         authRepository = new AuthRepository();
         selectedDate = Calendar.getInstance();
@@ -93,9 +97,10 @@ public class CreatePlanFragment extends Fragment {
         setupTransportFilter();
         setupAdapters();
         setupListeners();
-        observeSchedules();
         
-        scheduleViewModel.loadAllSchedules();
+        // Load all schedules from REST API with visible progress
+        Toast.makeText(requireContext(), "Loading schedules from desktop...", Toast.LENGTH_SHORT).show();
+        loadSchedulesFromAPI();
     }
 
     private void initViews(View view) {
@@ -123,10 +128,11 @@ public class CreatePlanFragment extends Fragment {
     }
 
     private void setupAutoComplete() {
+        String[] cities = getResources().getStringArray(R.array.bangladesh_districts);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 requireContext(),
                 android.R.layout.simple_dropdown_item_1line,
-                Constants.BANGLADESH_CITIES
+                cities
         );
         autocompleteOrigin.setAdapter(adapter);
         autocompleteDestination.setAdapter(adapter);
@@ -182,11 +188,65 @@ public class CreatePlanFragment extends Fragment {
     private void setupListeners() {
         buttonSearch.setOnClickListener(v -> searchRoutes());
         fabSave.setOnClickListener(v -> savePlan());
+        
+        // Add long press on search button to reload schedules
+        buttonSearch.setOnLongClickListener(v -> {
+            Toast.makeText(requireContext(), "Reloading schedules from desktop...", Toast.LENGTH_SHORT).show();
+            loadSchedulesFromAPI();
+            return true;
+        });
     }
 
-    private void observeSchedules() {
-        scheduleViewModel.getSchedules().observe(getViewLifecycleOwner(), schedules -> {
-            // Schedules are loaded, waiting for search
+    private List<Schedule> allSchedules = new ArrayList<>();
+    
+    private void loadSchedulesFromAPI() {
+        android.util.Log.d("CreatePlanFragment", "Loading schedules from API...");
+        
+        apiService.getAllSchedules().enqueue(new retrofit2.Callback<java.util.List<com.siyam.travelschedulemanager.data.remote.dto.UnifiedScheduleDTO>>() {
+            @Override
+            public void onResponse(retrofit2.Call<java.util.List<com.siyam.travelschedulemanager.data.remote.dto.UnifiedScheduleDTO>> call, retrofit2.Response<java.util.List<com.siyam.travelschedulemanager.data.remote.dto.UnifiedScheduleDTO>> response) {
+                android.util.Log.d("CreatePlanFragment", "API Response code: " + response.code());
+                
+                if (response.isSuccessful() && response.body() != null) {
+                    allSchedules.clear();
+                    List<com.siyam.travelschedulemanager.data.remote.dto.UnifiedScheduleDTO> dtoList = response.body();
+                    
+                    android.util.Log.d("CreatePlanFragment", "Received " + dtoList.size() + " schedules from API");
+                    
+                    // Convert UnifiedScheduleDTO to Schedule
+                    for (com.siyam.travelschedulemanager.data.remote.dto.UnifiedScheduleDTO dto : dtoList) {
+                        Schedule schedule = new Schedule();
+                        schedule.setId(java.util.UUID.randomUUID().toString());
+                        schedule.setTransportType(dto.getType().toUpperCase());
+                        schedule.setOrigin(dto.getStart());
+                        schedule.setDestination(dto.getDestination());
+                        schedule.setDepartureTime(dto.getStartTime());
+                        schedule.setArrivalTime(dto.getArrivalTime());
+                        schedule.setFare(dto.getFare());
+                        schedule.setOperatorName(dto.getName());
+                        schedule.setTotalSeats(30); // Default value
+                        
+                        if (dto.isTrain()) {
+                            schedule.setTrainNumber(dto.getName());
+                        }
+                        
+                        allSchedules.add(schedule);
+                    }
+                    
+                    android.util.Log.d("CreatePlanFragment", "Successfully loaded " + allSchedules.size() + " schedules");
+                    Toast.makeText(requireContext(), "✓ Loaded " + allSchedules.size() + " routes from desktop", Toast.LENGTH_LONG).show();
+                } else {
+                    String errorMsg = "Failed to load routes. Response code: " + response.code();
+                    android.util.Log.e("CreatePlanFragment", errorMsg);
+                    Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<java.util.List<com.siyam.travelschedulemanager.data.remote.dto.UnifiedScheduleDTO>> call, Throwable t) {
+                android.util.Log.e("CreatePlanFragment", "Failed to load schedules", t);
+                Toast.makeText(requireContext(), "Connection error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
         });
     }
 
@@ -213,37 +273,71 @@ public class CreatePlanFragment extends Fragment {
         }
 
         // Filter schedules
-        List<Schedule> allSchedules = scheduleViewModel.getSchedules().getValue();
         List<Schedule> filteredSchedules = new ArrayList<>();
         
-        if (allSchedules != null) {
-            for (Schedule schedule : allSchedules) {
-                boolean matchesRoute = schedule.getOrigin().equalsIgnoreCase(origin) && 
-                                      schedule.getDestination().equalsIgnoreCase(destination);
-                boolean matchesType = transportType == null || schedule.getTransportType().equals(transportType);
-                
-                if (matchesRoute && matchesType) {
-                    filteredSchedules.add(schedule);
-                }
+        android.util.Log.d("CreatePlanFragment", "Searching for routes from '" + origin + "' to '" + destination + "'");
+        android.util.Log.d("CreatePlanFragment", "Total schedules in memory: " + allSchedules.size());
+        
+        for (Schedule schedule : allSchedules) {
+            boolean matchesRoute = schedule.getOrigin().equalsIgnoreCase(origin) && 
+                                  schedule.getDestination().equalsIgnoreCase(destination);
+            boolean matchesType = transportType == null || schedule.getTransportType().equals(transportType);
+            
+            if (matchesRoute && matchesType) {
+                filteredSchedules.add(schedule);
+                android.util.Log.d("CreatePlanFragment", "Match found: " + schedule.getOrigin() + " -> " + schedule.getDestination());
             }
         }
+        
+        android.util.Log.d("CreatePlanFragment", "Found " + filteredSchedules.size() + " matching routes");
 
-        if (filteredSchedules.isEmpty()) {
-            Toast.makeText(requireContext(), "No routes found for this search", Toast.LENGTH_SHORT).show();
+        if (allSchedules.isEmpty()) {
+            Toast.makeText(requireContext(), "⚠ No schedules loaded. Hold search button to reload from desktop.", Toast.LENGTH_LONG).show();
+            textSearchResults.setVisibility(View.GONE);
+            recyclerSearchResults.setVisibility(View.GONE);
+        } else if (filteredSchedules.isEmpty()) {
+            Toast.makeText(requireContext(), "No routes found from " + origin + " to " + destination, Toast.LENGTH_LONG).show();
             textSearchResults.setVisibility(View.GONE);
             recyclerSearchResults.setVisibility(View.GONE);
         } else {
             searchAdapter.setSchedules(filteredSchedules);
             textSearchResults.setVisibility(View.VISIBLE);
+            textSearchResults.setText("✈️ Available Routes (" + filteredSchedules.size() + ")");
             recyclerSearchResults.setVisibility(View.VISIBLE);
             Toast.makeText(requireContext(), "Found " + filteredSchedules.size() + " routes", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void onScheduleSelected(Schedule schedule) {
+        // Validate 30-min connection time if there are existing legs
+        if (!selectedLegs.isEmpty()) {
+            Schedule lastLeg = selectedLegs.get(selectedLegs.size() - 1);
+            String lastArrival = lastLeg.getArrivalTime();
+            String newDeparture = schedule.getDepartureTime();
+            
+            // Check if destinations match (last leg destination should be same as new leg origin)
+            if (!lastLeg.getDestination().equals(schedule.getOrigin())) {
+                Toast.makeText(requireContext(), 
+                    "Invalid connection: Destination of previous leg (" + lastLeg.getDestination() + 
+                    ") doesn't match origin of new leg (" + schedule.getOrigin() + ")", 
+                    Toast.LENGTH_LONG).show();
+                return;
+            }
+            
+            // Validate 30-min transfer time
+            if (!com.siyam.travelschedulemanager.util.DateUtils.isValidTransferTime(lastArrival, newDeparture, 30)) {
+                int gap = com.siyam.travelschedulemanager.util.DateUtils.calculateDuration(lastArrival, newDeparture);
+                Toast.makeText(requireContext(), 
+                    "Invalid connection: Only " + gap + " minutes between arrival (" + lastArrival + 
+                    ") and departure (" + newDeparture + "). Minimum 30 minutes required.", 
+                    Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+        
         selectedLegs.add(schedule);
         updateSelectedLegs();
-        Toast.makeText(requireContext(), "Added to journey", Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), "Added to journey ✓", Toast.LENGTH_SHORT).show();
     }
 
     private void onLegRemoved(int position) {
@@ -277,15 +371,17 @@ public class CreatePlanFragment extends Fragment {
         totalDuration = 0;
         for (Schedule schedule : selectedLegs) {
             totalFare += schedule.getFare();
-            totalDuration += schedule.getDuration();
+            // Calculate duration from departure and arrival times
+            int duration = com.siyam.travelschedulemanager.util.DateUtils.calculateDuration(
+                schedule.getDepartureTime(), 
+                schedule.getArrivalTime()
+            );
+            totalDuration += duration;
         }
         
         textTotalFare.setText(String.format("Total Fare: ৳%.2f", totalFare));
-        
-        int hours = totalDuration / 60;
-        int mins = totalDuration % 60;
-        String durationText = hours > 0 ? hours + "h " + mins + "m" : mins + "m";
-        textTotalDuration.setText("Total Duration: " + durationText);
+        textTotalDuration.setText("Total Duration: " + 
+            com.siyam.travelschedulemanager.util.DateUtils.formatDuration(totalDuration));
     }
 
     private void savePlan() {

@@ -15,11 +15,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.firebase.FirebaseApp;
 import com.siyam.travelschedulemanager.R;
 import com.siyam.travelschedulemanager.dashboard.developer.DeveloperDashboardActivity;
 import com.siyam.travelschedulemanager.dashboard.master.MasterDashboardActivity;
 import com.siyam.travelschedulemanager.dashboard.user.UserDashboardActivity;
+import com.google.firebase.FirebaseApp;
 import com.siyam.travelschedulemanager.model.User;
 import com.siyam.travelschedulemanager.util.Constants;
 import com.siyam.travelschedulemanager.util.ValidationUtils;
@@ -110,7 +110,6 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         forgotPasswordLink.setOnClickListener(v -> {
-            // Show forgot password dialog
             showForgotPasswordDialog();
         });
         
@@ -124,6 +123,16 @@ public class LoginActivity extends AppCompatActivity {
                 .setMessage(Html.fromHtml(helpText, Html.FROM_HTML_MODE_LEGACY))
                 .setPositiveButton("Close", null)
                 .show();
+    }
+
+    private void showForgotPasswordDialog() {
+        String email = emailInput.getText().toString().trim();
+        if (ValidationUtils.isValidEmail(email)) {
+            authViewModel.sendPasswordReset(email);
+            Toast.makeText(this, "Password reset email sent to " + email, Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Please enter your email first", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void handleLogin() {
@@ -143,16 +152,5 @@ public class LoginActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
         authViewModel.signIn(email, password);
-    }
-
-    private void showForgotPasswordDialog() {
-        // Simple implementation - you can enhance with a custom dialog
-        String email = emailInput.getText().toString().trim();
-        if (ValidationUtils.isValidEmail(email)) {
-            authViewModel.sendPasswordReset(email);
-            Toast.makeText(this, "Password reset email sent to " + email, Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, "Please enter your email first", Toast.LENGTH_SHORT).show();
-        }
     }
 }

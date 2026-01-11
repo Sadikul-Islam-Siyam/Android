@@ -65,27 +65,22 @@ public class Constants {
     public static final int MAX_PLAN_LEGS = 3;
     public static final int MIN_PLAN_LEGS = 1;
 
-    // Bangladesh Cities (19 major cities)
+    // Bangladesh Districts (all 64 districts)
     public static final List<String> BANGLADESH_CITIES = Arrays.asList(
-            "Dhaka",
-            "Chittagong",
-            "Khulna",
-            "Rajshahi",
-            "Sylhet",
-            "Barisal",
-            "Rangpur",
-            "Mymensingh",
-            "Comilla",
-            "Narayanganj",
-            "Gazipur",
-            "Jessore",
-            "Bogra",
-            "Dinajpur",
-            "Cox's Bazar",
-            "Brahmanbaria",
-            "Tangail",
-            "Pabna",
-            "Faridpur"
+            "Barguna", "Barishal", "Bhola", "Jhalokati", "Patuakhali", "Pirojpur",
+            "Bandarban", "Brahmanbaria", "Chandpur", "Chattogram", "Coxs Bazar", "Cumilla",
+            "Feni", "Khagrachari", "Lakshmipur", "Noakhali", "Rangamati",
+            "Dhaka", "Faridpur", "Gazipur", "Gopalganj", "Kishoreganj", "Madaripur",
+            "Manikganj", "Munshiganj", "Narayanganj", "Narsingdi", "Rajbari",
+            "Shariatpur", "Tangail",
+            "Bagerhat", "Chuadanga", "Jashore", "Jhenaidah", "Khulna", "Kushtia",
+            "Magura", "Meherpur", "Narail", "Satkhira",
+            "Jamalpur", "Mymensingh", "Netrokona", "Sherpur",
+            "Bogura", "Joypurhat", "Naogaon", "Natore", "Chapai Nawabganj", "Pabna",
+            "Rajshahi", "Sirajganj",
+            "Dinajpur", "Gaibandha", "Kurigram", "Lalmonirhat", "Nilphamari",
+            "Panchagarh", "Rangpur", "Thakurgaon",
+            "Habiganj", "Moulvibazar", "Sunamganj", "Sylhet"
     );
 
     // Days of Week

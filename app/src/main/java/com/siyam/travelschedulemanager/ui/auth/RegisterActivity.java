@@ -13,22 +13,23 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.siyam.travelschedulemanager.R;
 import com.siyam.travelschedulemanager.util.Constants;
 import com.siyam.travelschedulemanager.util.ValidationUtils;
-import com.siyam.travelschedulemanager.viewmodel.AuthViewModel;
+import com.siyam.travelschedulemanager.viewmodel.RestAuthViewModel;
 
 public class RegisterActivity extends AppCompatActivity {
-    private EditText usernameInput, emailInput, passwordInput, confirmPasswordInput;
+    private EditText usernameInput, emailInput, passwordInput, confirmPasswordInput, fullNameInput;
     private AutoCompleteTextView roleSpinner;
     private Button registerButton;
     private ImageButton backButton;
     private TextView loginLink;
     private ProgressBar progressBar;
-    private AuthViewModel authViewModel;
+    private RestAuthViewModel authViewModel;
     private String selectedRole = Constants.ROLE_USER;
 
     @Override
@@ -36,7 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        authViewModel = new ViewModelProvider(this).get(RestAuthViewModel.class);
 
         initViews();
         setupObservers();
@@ -46,6 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void initViews() {
         usernameInput = findViewById(R.id.username_input);
         emailInput = findViewById(R.id.email_input);
+        fullNameInput = findViewById(R.id.full_name_input);
         roleSpinner = findViewById(R.id.role_spinner);
         passwordInput = findViewById(R.id.password_input);
         confirmPasswordInput = findViewById(R.id.confirm_password_input);
@@ -65,18 +67,67 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void setupObservers() {
-        authViewModel.getAuthResult().observe(this, result -> {
-            progressBar.setVisibility(View.GONE);
-            if (result.success) {
-                Toast.makeText(this, result.message, Toast.LENGTH_LONG).show();
-                finish();
+        authViewModel.getRegisterSuccess().observe(this, success -> {
+            if (success != null && success) {
+                showSuccessDialog();
             }
         });
 
-        authViewModel.getError().observe(this, error -> {
-            progressBar.setVisibility(View.GONE);
+        authViewModel.getIsLoading().observe(this, isLoading -> {
+            progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+            registerButton.setEnabled(!isLoading);
+        });
+
+        authViewModel.getErrorMessage().observe(this, error -> {
             if (!TextUtils.isEmpty(error)) {
                 Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+                authViewModel.clearError();
+            }
+        });
+    }
+
+    private void showSuccessDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Registration Submitted")
+                .setMessage("Your registration has been submitted successfully!\n\n" +
+                        "Your account is pending approval from the Master Admin.\n\n" +
+                        "You will be able to login once your account is approved.")
+                .setPositiveButton("Check Status", (dialog, which) -> {
+                    showStatusCheckDialog();
+                })
+                .setNegativeButton("Close", (dialog, which) -> {
+                    finish();
+                })
+                .setCancelable(false)
+                .show();
+    }
+
+    private void showStatusCheckDialog() {
+        EditText input = new EditText(this);
+        input.setHint("Enter your username");
+        
+        new AlertDialog.Builder(this)
+                .setTitle("Check Account Status")
+                .setView(input)
+                .setPositiveButton("Check", (dialog, which) -> {
+                    String username = input.getText().toString().trim();
+                    if (!TextUtils.isEmpty(username)) {
+                        checkStatus(username);
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void checkStatus(String username) {
+        authViewModel.checkAccountStatus(username);
+        authViewModel.getStatusMessage().observe(this, status -> {
+            if (!TextUtils.isEmpty(status)) {
+                new AlertDialog.Builder(this)
+                        .setTitle("Account Status")
+                        .setMessage(status)
+                        .setPositiveButton("OK", (dialog, which) -> finish())
+                        .show();
             }
         });
     }
@@ -92,6 +143,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void handleRegister() {
         String username = usernameInput.getText().toString().trim();
         String email = emailInput.getText().toString().trim();
+        String fullName = fullNameInput.getText().toString().trim();
         String password = passwordInput.getText().toString().trim();
         String confirmPassword = confirmPasswordInput.getText().toString().trim();
 
@@ -99,6 +151,11 @@ public class RegisterActivity extends AppCompatActivity {
         String usernameError = ValidationUtils.getUsernameError(username);
         if (usernameError != null) {
             usernameInput.setError(usernameError);
+            return;
+        }
+
+        if (TextUtils.isEmpty(fullName) || fullName.length() < 3) {
+            fullNameInput.setError("Full name must be at least 3 characters");
             return;
         }
 
@@ -119,7 +176,6 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        progressBar.setVisibility(View.VISIBLE);
-        authViewModel.registerWithRole(username, email, password, selectedRole);
+        authViewModel.register(username, email, password, fullName, selectedRole);
     }
 }

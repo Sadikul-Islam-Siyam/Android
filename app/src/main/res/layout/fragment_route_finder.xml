@@ -205,8 +205,16 @@
                 android:textColor="@color/primary"
                 android:layout_marginBottom="12dp" />
 
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:layout_marginBottom="16dp" />
+
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_routes"
+                android:id="@+id/recycler_view_results"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="200dp" />

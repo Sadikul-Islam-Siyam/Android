@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.siyam.travelschedulemanager.R;
 import com.siyam.travelschedulemanager.data.firebase.AuthRepository;
+import com.siyam.travelschedulemanager.model.Plan;
 import com.siyam.travelschedulemanager.ui.plan.adapter.PlanAdapter;
 import com.siyam.travelschedulemanager.viewmodel.PlanViewModel;
 
@@ -60,7 +62,43 @@ public class PlansFragment extends Fragment {
         recyclerView = view.findViewById(R.id.plans_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         adapter = new PlanAdapter();
+        adapter.setOnPlanActionListener(new PlanAdapter.OnPlanActionListener() {
+            @Override
+            public void onViewPlan(Plan plan) {
+                // Navigate to plan detail
+                Bundle bundle = new Bundle();
+                bundle.putString("planId", plan.getId());
+                Navigation.findNavController(view).navigate(R.id.action_plans_to_plan_detail, bundle);
+            }
+
+            @Override
+            public void onEditPlan(Plan plan) {
+                // Navigate to edit plan (reuse CreatePlanFragment)
+                Bundle bundle = new Bundle();
+                bundle.putString("planId", plan.getId());
+                bundle.putBoolean("isEditing", true);
+                Navigation.findNavController(view).navigate(R.id.action_plans_to_create_plan, bundle);
+            }
+
+            @Override
+            public void onDeletePlan(Plan plan) {
+                // Show confirmation dialog
+                showDeleteConfirmation(plan);
+            }
+        });
         recyclerView.setAdapter(adapter);
+    }
+
+    private void showDeleteConfirmation(Plan plan) {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Delete Plan")
+                .setMessage("Are you sure you want to delete '" + plan.getName() + "'?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    planViewModel.deletePlan(plan.getId());
+                    Toast.makeText(requireContext(), "Plan deleted", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private void setupObservers() {

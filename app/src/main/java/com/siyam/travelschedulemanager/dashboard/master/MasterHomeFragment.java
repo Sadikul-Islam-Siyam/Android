@@ -35,7 +35,6 @@ public class MasterHomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        MaterialCardView cardRouteManagement = view.findViewById(R.id.card_route_management);
         MaterialCardView cardApproveApiChanges = view.findViewById(R.id.card_approve_api_changes);
         MaterialCardView cardApproveAccounts = view.findViewById(R.id.card_approve_accounts);
         MaterialCardView cardChangeRoles = view.findViewById(R.id.card_change_roles);
@@ -46,12 +45,6 @@ public class MasterHomeFragment extends Fragment {
         ImageButton helpButton = view.findViewById(R.id.help_button);
 
         NavController navController = Navigation.findNavController(view);
-
-        cardRouteManagement.setOnClickListener(v -> {
-            Bundle args = new Bundle();
-            args.putString("userRole", "master");
-            navController.navigate(R.id.action_masterHome_to_routeManagement, args);
-        });
 
         cardApproveApiChanges.setOnClickListener(v -> {
             navController.navigate(R.id.action_masterHome_to_approveApiChanges);

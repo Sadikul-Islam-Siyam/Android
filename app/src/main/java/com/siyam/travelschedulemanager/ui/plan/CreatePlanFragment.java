@@ -101,6 +101,16 @@ public class CreatePlanFragment extends Fragment {
         // Load all schedules from REST API with visible progress
         Toast.makeText(requireContext(), "Loading schedules from desktop...", Toast.LENGTH_SHORT).show();
         loadSchedulesFromAPI();
+        
+        // Check if editing existing plan
+        if (getArguments() != null) {
+            String planId = getArguments().getString("planId");
+            boolean isEditing = getArguments().getBoolean("isEditing", false);
+            
+            if (isEditing && planId != null) {
+                loadExistingPlan(planId);
+            }
+        }
     }
 
     private void initViews(View view) {
@@ -403,8 +413,26 @@ public class CreatePlanFragment extends Fragment {
             return;
         }
 
-        // Create Plan with legs
-        Plan plan = new Plan(userId, planName, "Journey with " + selectedLegs.size() + " legs");
+        // Check if editing existing plan
+        String existingPlanId = null;
+        if (getArguments() != null) {
+            existingPlanId = getArguments().getString("planId");
+        }
+        
+        // Create or update Plan with legs
+        Plan plan;
+        if (existingPlanId != null) {
+            // Update existing plan
+            plan = new Plan();
+            plan.setId(existingPlanId);
+            plan.setUserId(userId);
+            plan.setName(planName);
+            plan.setNotes("Journey with " + selectedLegs.size() + " legs");
+        } else {
+            // Create new plan
+            plan = new Plan(userId, planName, "Journey with " + selectedLegs.size() + " legs");
+        }
+        
         plan.setTotalFare(totalFare);
         plan.setTotalDuration(totalDuration);
         
@@ -443,6 +471,48 @@ public class CreatePlanFragment extends Fragment {
         planViewModel.getError().observe(getViewLifecycleOwner(), error -> {
             if (error != null && !error.isEmpty()) {
                 Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
+    private void loadExistingPlan(String planId) {
+        planViewModel.loadPlan(planId);
+        planViewModel.getCurrentPlan().observe(getViewLifecycleOwner(), plan -> {
+            if (plan != null) {
+                // Populate plan name
+                editPlanName.setText(plan.getName());
+                
+                // Populate date
+                if (plan.getCreatedDate() != null) {
+                    selectedDate.setTime(plan.getCreatedDate().toDate());
+                    editTextDate.setText(dateFormat.format(selectedDate.getTime()));
+                }
+                
+                // Convert plan legs to schedules and add to selected legs
+                if (plan.getLegs() != null && !plan.getLegs().isEmpty()) {
+                    selectedLegs.clear();
+                    for (Plan.PlanLeg leg : plan.getLegs()) {
+                        Schedule schedule = new Schedule();
+                        schedule.setId(leg.getScheduleId());
+                        schedule.setTransportType(leg.getTransportType());
+                        schedule.setOrigin(leg.getOrigin());
+                        schedule.setDestination(leg.getDestination());
+                        schedule.setDepartureTime(leg.getDepartureTime());
+                        schedule.setArrivalTime(leg.getArrivalTime());
+                        schedule.setFare(leg.getFare());
+                        schedule.setOperatorName(leg.getOperatorName());
+                        selectedLegs.add(schedule);
+                    }
+                    
+                    // Update UI
+                    selectedLegAdapter.setSelectedLegs(selectedLegs);
+                    calculateTotals();
+                    textSelectedLegs.setVisibility(View.VISIBLE);
+                    recyclerSelectedLegs.setVisibility(View.VISIBLE);
+                    cardSummary.setVisibility(View.VISIBLE);
+                }
+                
+                Toast.makeText(requireContext(), "Plan loaded for editing", Toast.LENGTH_SHORT).show();
             }
         });
     }

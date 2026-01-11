@@ -67,63 +67,6 @@
             android:padding="16dp">
 
             <!-- Section: API Management -->
-            <!-- Route Management Card -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_route_management"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:src="@android:drawable/ic_menu_mapmode"
-                        app:tint="?attr/colorPrimary" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="12dp"
-                        android:orientation="vertical">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Route Management"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="?attr/colorOnSurface" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Add, edit or delete bus &amp; train routes"
-                            android:textSize="12sp"
-                            android:textColor="?attr/colorOnSurfaceVariant" />
-
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@android:drawable/ic_media_play"
-                        app:tint="?attr/colorOnSurfaceVariant" />
-
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
             <!-- Approve API Changes Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_approve_api_changes"

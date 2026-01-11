@@ -21,9 +21,16 @@ public class RetrofitClient {
     private static final String TAG = "RetrofitClient";
     
     // Base URL Configuration
-    // Using ADB reverse for USB connection (works regardless of WiFi network)
-    // Run: adb reverse tcp:8080 tcp:8080
-    private static final String DEFAULT_BASE_URL = "http://localhost:8080/api/";
+    // Option 1: USB connection (requires: adb reverse tcp:8080 tcp:8080)
+    // private static final String DEFAULT_BASE_URL = "http://localhost:8080/api/";
+    
+    // Option 2: WiFi on same network (192.168.0.x)
+    private static final String DEFAULT_BASE_URL = "http://192.168.0.144:8080/api/";
+    
+    // Option 3: WiFi on different network (update with correct IP)
+    // To find IP, run on desktop: ipconfig
+    // Then update this with the IP address shown
+    // private static final String DEFAULT_BASE_URL = "http://YOUR_IP_HERE:8080/api/";
     
     private static RetrofitClient instance;
     private final ApiService apiService;

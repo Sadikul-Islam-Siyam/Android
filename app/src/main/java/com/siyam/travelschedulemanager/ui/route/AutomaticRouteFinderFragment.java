@@ -107,11 +107,14 @@ public class AutomaticRouteFinderFragment extends Fragment {
                     allSchedules = response.body();
                     emptyStateText.setVisibility(View.GONE);
                     
-                    // Log first schedule for debugging
-                    if (!allSchedules.isEmpty()) {
-                        UnifiedScheduleDTO first = allSchedules.get(0);
-                        android.util.Log.d("RouteFinderAPI", "Sample: " + first.getStart() + " -> " + first.getDestination());
+                    // Log ALL schedules for debugging
+                    android.util.Log.d("RouteFinderAPI", "=== ALL SCHEDULES FROM API ===");
+                    for (int i = 0; i < allSchedules.size(); i++) {
+                        UnifiedScheduleDTO s = allSchedules.get(i);
+                        android.util.Log.d("RouteFinderAPI", (i+1) + ". " + s.getStart() + " → " + s.getDestination() + 
+                            " (" + s.getType() + ", " + s.getName() + ")");
                     }
+                    android.util.Log.d("RouteFinderAPI", "=== END SCHEDULES ===");
                     
                     Toast.makeText(requireContext(), "✓ Loaded " + allSchedules.size() + " schedules from desktop", Toast.LENGTH_LONG).show();
                 } else {
@@ -155,6 +158,7 @@ public class AutomaticRouteFinderFragment extends Fragment {
         
         if (allSchedules.isEmpty()) {
             Toast.makeText(requireContext(), "No schedules loaded. Please wait for data to load from desktop app.", Toast.LENGTH_LONG).show();
+            loadSchedules(); // Try to reload
             return;
         }
         
@@ -162,23 +166,65 @@ public class AutomaticRouteFinderFragment extends Fragment {
         routesContainer.removeAllViews();
         
         // Normalize input to lowercase to match API data
-        String fromNormalized = from.toLowerCase();
-        String toNormalized = to.toLowerCase();
+        String fromNormalized = from.toLowerCase().trim();
+        String toNormalized = to.toLowerCase().trim();
         
-        android.util.Log.d("RouteFinderAPI", "Finding routes from '" + fromNormalized + "' to '" + toNormalized + "'");
+        android.util.Log.d("RouteFinderAPI", "=== SEARCH REQUEST ===");
+        android.util.Log.d("RouteFinderAPI", "From: '" + from + "' (normalized: '" + fromNormalized + "')");
+        android.util.Log.d("RouteFinderAPI", "To: '" + to + "' (normalized: '" + toNormalized + "')");
         android.util.Log.d("RouteFinderAPI", "Total schedules available: " + allSchedules.size());
         
-        // Use Dijkstra-based route finding
+        // Check if source city exists in schedules
+        boolean sourceFound = false;
+        boolean destFound = false;
+        for (UnifiedScheduleDTO s : allSchedules) {
+            if (s.getStart().toLowerCase().trim().equals(fromNormalized)) {
+                sourceFound = true;
+                android.util.Log.d("RouteFinderAPI", "✓ Source city '" + fromNormalized + "' found in schedules");
+            }
+            if (s.getDestination().toLowerCase().trim().equals(toNormalized) || 
+                s.getStart().toLowerCase().trim().equals(toNormalized)) {
+                destFound = true;
+                android.util.Log.d("RouteFinderAPI", "✓ Destination city '" + toNormalized + "' found in schedules");
+            }
+        }
+        
+        if (!sourceFound) {
+            android.util.Log.e("RouteFinderAPI", "❌ Source city '" + fromNormalized + "' NOT FOUND in any schedule!");
+            android.util.Log.d("RouteFinderAPI", "Available source cities:");
+            java.util.Set<String> sources = new java.util.HashSet<>();
+            for (UnifiedScheduleDTO s : allSchedules) {
+                sources.add(s.getStart().toLowerCase().trim());
+            }
+            for (String src : sources) {
+                android.util.Log.d("RouteFinderAPI", "  - " + src);
+            }
+        }
+        
+        if (!destFound) {
+            android.util.Log.e("RouteFinderAPI", "❌ Destination city '" + toNormalized + "' NOT FOUND in any schedule!");
+        }
+        
+        // Use DFS-based route finding
         RouteGraph graph = new RouteGraph(allSchedules);
         List<List<UnifiedScheduleDTO>> routes = graph.findRoutes(fromNormalized, toNormalized, 3); // Max 3 legs
         
-        android.util.Log.d("RouteFinderAPI", "Found " + routes.size() + " route(s)");
+        android.util.Log.d("RouteFinderAPI", "=== SEARCH RESULT: Found " + routes.size() + " route(s) ===");
         
         progressBar.setVisibility(View.GONE);
         
         if (routes.isEmpty()) {
             emptyStateText.setVisibility(View.VISIBLE);
-            emptyStateText.setText("No routes found between " + from + " and " + to + ".\n\nTry:\n• Check spelling\n• Use exact district names\n• Example: Dhaka, Chattogram, Jamalpur");
+            String errorMsg = "No routes found between " + from + " and " + to + ".";
+            if (!sourceFound || !destFound) {
+                errorMsg += "\n\n⚠️ City name issue detected!";
+                if (!sourceFound) errorMsg += "\n• '" + from + "' not in desktop data";
+                if (!destFound) errorMsg += "\n• '" + to + "' not in desktop data";
+                errorMsg += "\n\nCheck Logcat for available cities.";
+            } else {
+                errorMsg += "\n\nPossible issues:\n• No connecting routes exist\n• Connection times don't align\n• Check desktop app has routes";
+            }
+            emptyStateText.setText(errorMsg);
             routesContainer.setVisibility(View.GONE);
         } else {
             emptyStateText.setVisibility(View.GONE);
